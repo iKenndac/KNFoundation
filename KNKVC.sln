@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KNKVC", "KNKVC\KNKVC.csproj", "{E8DE5B2B-1DA4-42E4-8621-2C48C8CBD750}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KNKVC Test", "KNKVC Test\KNKVC Test.csproj", "{7BE306B0-C2FD-4A43-8E44-A741F4DF86DB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E8DE5B2B-1DA4-42E4-8621-2C48C8CBD750}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8DE5B2B-1DA4-42E4-8621-2C48C8CBD750}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8DE5B2B-1DA4-42E4-8621-2C48C8CBD750}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8DE5B2B-1DA4-42E4-8621-2C48C8CBD750}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BE306B0-C2FD-4A43-8E44-A741F4DF86DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BE306B0-C2FD-4A43-8E44-A741F4DF86DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BE306B0-C2FD-4A43-8E44-A741F4DF86DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BE306B0-C2FD-4A43-8E44-A741F4DF86DB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
