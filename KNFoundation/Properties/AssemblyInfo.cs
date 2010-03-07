@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("KNKVC")]
+[assembly: AssemblyTitle("KNFoundation")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("KNKVC")]
-[assembly: AssemblyCopyright("Copyright ©  2009")]
+[assembly: AssemblyCompany("KennettNet Software Limited")]
+[assembly: AssemblyProduct("KNFoundation")]
+[assembly: AssemblyCopyright("Copyright ©  2009-2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

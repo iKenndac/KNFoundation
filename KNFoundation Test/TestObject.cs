@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using KNKVC;
+using KNFoundation.KNKVC;
 
 namespace KNKVC_Test
 {
@@ -17,9 +17,9 @@ namespace KNKVC_Test
 
             set
             {
-                this.willChangeValueForKey("key");
+                this.WillChangeValueForKey("key");
                 aKey = value;
-                this.didChangeValueForKey("key");
+                this.DidChangeValueForKey("key");
             }
         }
     }

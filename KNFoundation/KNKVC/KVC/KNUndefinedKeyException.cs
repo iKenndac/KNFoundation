@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace KNKVC
-{
-    class KNUndefinedKeyException : Exception
-    {
+namespace KNFoundation.KNKVC {
+    class KNUndefinedKeyException : Exception {
     }
 }

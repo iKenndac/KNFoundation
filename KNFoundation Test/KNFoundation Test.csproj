@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>KNKVC_Test</RootNamespace>
     <AssemblyName>KNKVC Test</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -31,6 +31,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -90,6 +91,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -102,9 +104,9 @@
     <Compile Include="TestObject.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KNKVC\KNKVC.csproj">
+    <ProjectReference Include="..\KNFoundation\KNFoundation.csproj">
       <Project>{E8DE5B2B-1DA4-42E4-8621-2C48C8CBD750}</Project>
-      <Name>KNKVC</Name>
+      <Name>KNFoundation</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

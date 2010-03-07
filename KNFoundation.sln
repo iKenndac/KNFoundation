@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KNKVC", "KNKVC\KNKVC.csproj", "{E8DE5B2B-1DA4-42E4-8621-2C48C8CBD750}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KNFoundation", "KNFoundation\KNFoundation.csproj", "{E8DE5B2B-1DA4-42E4-8621-2C48C8CBD750}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KNKVC Test", "KNKVC Test\KNKVC Test.csproj", "{7BE306B0-C2FD-4A43-8E44-A741F4DF86DB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KNFoundation Test", "KNFoundation Test\KNFoundation Test.csproj", "{7BE306B0-C2FD-4A43-8E44-A741F4DF86DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
