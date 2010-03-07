@@ -83,6 +83,7 @@
     <Compile Include="KNKVC\KVC\KNUndefinedKeyException.cs" />
     <Compile Include="KNNotification.cs" />
     <Compile Include="KNNotificationCentre.cs" />
+    <Compile Include="KNPropertyListSerialization.cs" />
     <Compile Include="KNStringExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

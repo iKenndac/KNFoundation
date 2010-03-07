@@ -13,6 +13,7 @@ namespace KNFoundation {
 
         public KNNotification(string name, object sender, Dictionary<string, object> properties) {
             notificationName = name;
+            notificationSender = sender;
             if (properties != null) {
                 notificationProperties = properties;
             } else {

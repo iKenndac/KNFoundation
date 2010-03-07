@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using KNFoundation.KNKVC;
 using System.Globalization;
 using System.Threading;
+using System.Reflection;
 
 
 namespace KNFoundation {
@@ -64,18 +65,23 @@ namespace KNFoundation {
                 return null;
             }
         }
-
     }
 
-
-
     public class KNBundle {
+
+        // Constants
+
+        public const string KNShortVersionStringKey = "KNShortVersionString";
+        public const string KNBundleVersionKey = "KNBundleVersion";
+        public const string KNBundleExecutableKey = "KNBundleExecutable";
+        public const string KNBundleIdentifierKey = "KNBundleIdentifier";
 
         // This is an approximation of the NSBundle class. Yay!
         static Dictionary<string, KNBundle> bundleCache = new Dictionary<string, KNBundle>();
 
         public static KNBundle MainBundle() {
-            FileInfo appInfo = new FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+            FileInfo appInfo = new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location);
             return KNBundle.BundleWithPath(appInfo.DirectoryName);
         }
 
@@ -100,9 +106,11 @@ namespace KNFoundation {
         private string bundlePath;
         private string cachedLocalisedResourcesPath;
         private Dictionary<string, Dictionary<string, string>> stringsCache;
+        private Dictionary<string, object> infoDictionary; // Equivalent to info.plist
 
         private KNBundle(string path) {
             BundlePath = path;
+            infoDictionary = ParseBundleInfoPlist();
             stringsCache = new Dictionary<string, Dictionary<string, string>>();
 
             // Pre-cache strings files.
@@ -223,6 +231,20 @@ namespace KNFoundation {
             return null;
         }
 
+        private Dictionary<string, object> ParseBundleInfoPlist() {
+
+            string infoPath = PathForResourceOfType("Info", "plist");
+
+            if (!String.IsNullOrWhiteSpace(infoPath) && File.Exists(infoPath)) {
+
+                try {
+                    return KNPropertyListSerialization.PropertyListWithData(File.ReadAllBytes(infoPath));
+                } catch (Exception ex) {
+                }
+            }
+            return new Dictionary<string, object>();
+        }
+
         private Dictionary<string, string> AttemptToParseStringsFile(string path) {
 
             Dictionary<string, string> stringsTable = new Dictionary<string, string>();
@@ -285,6 +307,64 @@ namespace KNFoundation {
 
             return stringsTable;
         }
+
+        #region Info Convenience Properties
+
+        public string ShortVersionString {
+            get {
+
+                if (InfoDictionary.ContainsKey(KNShortVersionStringKey)) {
+                    return (string)InfoDictionary.ValueForKey(KNShortVersionStringKey);
+                }
+
+                if (InfoDictionary.ContainsKey(KNBundleExecutableKey)) {
+                    string assemblyPath = (string)InfoDictionary.ValueForKey(KNBundleExecutableKey);
+                    try {
+                        AssemblyName name = AssemblyName.GetAssemblyName(assemblyPath);
+                        return name.Version.ToString();
+                    } catch (Exception ex) {
+                    }
+                }
+
+                return null;
+            }
+        }
+
+        public string Version {
+            get {
+                if (InfoDictionary.ContainsKey(KNBundleVersionKey)) {
+                    return (string)InfoDictionary.ValueForKey(KNBundleVersionKey);
+                } else {
+                    return null;
+                }
+            }
+        }
+
+        public string ExecutablePath {
+            get {
+                if (InfoDictionary.ContainsKey(KNBundleExecutableKey)) {
+                    return (string)InfoDictionary.ValueForKey(KNBundleExecutableKey);
+                } else {
+                    return null;
+                }
+            }
+        }
+
+        public string BundleIdentifier {
+            get {
+                if (InfoDictionary.ContainsKey(KNBundleIdentifierKey)) {
+                    return (string)InfoDictionary.ValueForKey(KNBundleIdentifierKey);
+                } else {
+                    return null;
+                }
+            }
+        }
+
+        public Dictionary<string, object> InfoDictionary {
+            get { return infoDictionary; }
+        }
+
+        #endregion
 
         #region "Properties"
 
