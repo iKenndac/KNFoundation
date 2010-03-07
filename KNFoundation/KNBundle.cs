@@ -75,6 +75,8 @@ namespace KNFoundation {
         public const string KNBundleVersionKey = "KNBundleVersion";
         public const string KNBundleExecutableKey = "KNBundleExecutable";
         public const string KNBundleIdentifierKey = "KNBundleIdentifier";
+        public const string KNBundleNameKey = "KNBundleName";
+        public const string KNBundleDisplayNameKey = "KNBundleDisplayName";
 
         // This is an approximation of the NSBundle class. Yay!
         static Dictionary<string, KNBundle> bundleCache = new Dictionary<string, KNBundle>();
@@ -309,6 +311,26 @@ namespace KNFoundation {
         }
 
         #region Info Convenience Properties
+
+        public string Name {
+            get {
+                if (InfoDictionary.ContainsKey(KNBundleNameKey)) {
+                    return (string)InfoDictionary.ValueForKey(KNBundleNameKey);
+                } else {
+                    return null;
+                }
+            }
+        }
+
+        public string DisplayName {
+            get {
+                if (InfoDictionary.ContainsKey(KNBundleDisplayNameKey)) {
+                    return (string)InfoDictionary.ValueForKey(KNBundleDisplayNameKey);
+                } else {
+                    return null;
+                }
+            }
+        }
 
         public string ShortVersionString {
             get {
