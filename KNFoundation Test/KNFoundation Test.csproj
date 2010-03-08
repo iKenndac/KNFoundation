@@ -102,6 +102,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="TestObject.cs" />
+    <Content Include="Resources\PropertyList-1.0.dtd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KNFoundation\KNFoundation.csproj">

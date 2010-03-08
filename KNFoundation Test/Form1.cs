@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Collections;
 using KNFoundation.KNKVC;
 using KNFoundation;
 
@@ -21,9 +22,34 @@ namespace KNKVC_Test
             return anObj;
         }
 
+
+        Dictionary<string, object> plist = new Dictionary<string, object>();
+
         public Form1()
         {
             InitializeComponent();
+
+
+            plist.Add("Name", "Daniel");
+            plist.Add("Age", 12);
+            plist.Add("Birthday", new DateTime(1985, 04, 15));
+            plist.Add("Awesome?", true);
+            plist.Add("Data", new byte[] { 0, 0, 0, 0 });
+
+            ArrayList favouriteThings = new ArrayList();
+            favouriteThings.Add("Trains");
+            favouriteThings.Add("Cars");
+            favouriteThings.Add("Snowboarding");
+            favouriteThings.Add("Cheeseburgers");
+
+            plist.Add("A Few Of My Favourite Things", favouriteThings);
+
+            Dictionary<string, object> colors = new Dictionary<string, object>();
+            colors.Add("Trousers", "Blue");
+            colors.Add("Jumper", "Red");
+            colors.Add("Socks", "Black");
+
+            plist.Add("Colors", colors);
 
         }
 
@@ -76,6 +102,21 @@ namespace KNKVC_Test
             MessageBox.Show(notification.Name);
         }
 
+        private void button7_Click(object sender, EventArgs e) {
 
+            MessageBox.Show(plist.Keys.Count.ToString());
+
+            MessageBox.Show(Encoding.UTF8.GetString(KNPropertyListSerialization.DataWithPropertyList(plist)));
+
+
+        }
+
+        private void button8_Click(object sender, EventArgs e) {
+
+            Dictionary<string, object> prefs = KNPropertyListSerialization.PropertyListWithData(KNPropertyListSerialization.DataWithPropertyList(plist));
+
+            MessageBox.Show(prefs.Keys.Count.ToString());
+
+        }
     }
 }
