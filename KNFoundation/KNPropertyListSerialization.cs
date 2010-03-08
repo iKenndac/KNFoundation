@@ -60,7 +60,7 @@ namespace KNFoundation {
                     }
                 }
                 return null;
-            } catch (Exception ex) {
+            } catch {
                 return null;
             }
         }
@@ -92,6 +92,8 @@ namespace KNFoundation {
                     dict.Add(key, DateTimeFromDateElement(valueNode));
                 } else if (valueNode.Name.Equals("data")) {
                     dict.Add(key, DataFromDataElement(valueNode));
+                } else if (valueNode.Name.Equals("real")) {
+                    dict.Add(key, DoubleFromRealElement(valueNode));
                 } else if (valueNode.Name.Equals("true")) {
                     dict.Add(key, true);
                 } else if (valueNode.Name.Equals("false")) {
@@ -132,6 +134,14 @@ namespace KNFoundation {
             return Convert.FromBase64String(dataNode.InnerText);
         }
 
+        private static double DoubleFromRealElement(XmlNode realNode) {
+            try {
+                return double.Parse(realNode.InnerText);
+            } catch {
+                return 0.0;
+            }
+        }
+
         private static ArrayList ArrayFromArrayElement(XmlNode arrayNode) {
 
             ArrayList array = new ArrayList();
@@ -152,6 +162,8 @@ namespace KNFoundation {
                     obj = DateTimeFromDateElement(valueNode);
                 } else if (valueNode.Name.Equals("data")) {
                     obj = DataFromDataElement(valueNode);
+                } else if (valueNode.Name.Equals("real")) {
+                    obj = DoubleFromRealElement(valueNode);
                 } else if (valueNode.Name.Equals("true")) {
                     obj = true;
                 } else if (valueNode.Name.Equals("false")) {
@@ -250,6 +262,21 @@ namespace KNFoundation {
             return plistRep;
         }
 
+        public static ArrayList PropertyListRepresentationWithKey(this double d, XmlDocument doc, string key) {
+
+            ArrayList plistRep = new ArrayList();
+
+            if (!String.IsNullOrWhiteSpace(key)) {
+                plistRep.Add(KeyElementForKey(key, doc));
+            }
+
+            XmlElement intEl = doc.CreateElement("real");
+            intEl.InnerText = d.ToString();
+            plistRep.Add(intEl);
+
+            return plistRep;
+        }
+
         public static ArrayList PropertyListRepresentationWithKey(this byte[] b, XmlDocument doc, string key) {
 
             ArrayList plistRep = new ArrayList();
@@ -295,6 +322,8 @@ namespace KNFoundation {
                         plistReps = ((DateTime)item).PropertyListRepresentationWithKey(doc, currentKey);
                     } else if (item.GetType() == typeof(bool)) {
                         plistReps = ((bool)item).PropertyListRepresentationWithKey(doc, currentKey);
+                    } else if (item.GetType() == typeof(double)) {
+                        plistReps = ((double)item).PropertyListRepresentationWithKey(doc, currentKey);
                     } else if (item.GetType() == typeof(Dictionary<string, object>)) {
                         plistReps = ((Dictionary<string, object>)item).PropertyListRepresentationWithKey(doc, currentKey);
                     } else if (item.GetType() == typeof(byte[])) {
@@ -340,6 +369,8 @@ namespace KNFoundation {
                     plistReps = ((DateTime)item).PropertyListRepresentationWithKey(doc, null);
                 } else if (item.GetType() == typeof(bool)) {
                     plistReps = ((bool)item).PropertyListRepresentationWithKey(doc, null);
+                } else if (item.GetType() == typeof(double)) {
+                    plistReps = ((double)item).PropertyListRepresentationWithKey(doc, null);
                 } else if (item.GetType() == typeof(Dictionary<string, object>)) {
                     plistReps = ((Dictionary<string, object>)item).PropertyListRepresentationWithKey(doc, null);
                 } else if (item.GetType() == typeof(byte[])) {

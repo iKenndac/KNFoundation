@@ -245,7 +245,7 @@ namespace KNFoundation {
 
                 try {
                     return KNPropertyListSerialization.PropertyListWithData(File.ReadAllBytes(infoPath));
-                } catch (Exception ex) {
+                } catch {
                 }
             }
             return new Dictionary<string, object>();
@@ -300,14 +300,14 @@ namespace KNFoundation {
                             stringsTable.Add(key.DeEscapedString(), value.DeEscapedString());
                         }
 
-                    } catch (Exception e) {
+                    } catch {
                         // Don't care. Hooray!
                     }
                 }
 
                 reader.Close();
                 reader.Dispose();
-            } catch (Exception e) {
+            } catch {
                 // Do nothing!
             }
 
@@ -348,7 +348,7 @@ namespace KNFoundation {
                     try {
                         AssemblyName name = AssemblyName.GetAssemblyName(assemblyPath);
                         return name.Version.ToString();
-                    } catch (Exception ex) {
+                    } catch {
                     }
                 }
 

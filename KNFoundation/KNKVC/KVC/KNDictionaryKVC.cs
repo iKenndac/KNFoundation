@@ -6,7 +6,7 @@ using System.Text;
 namespace KNFoundation.KNKVC {
     static class KNDictionaryKVC {
         public static Object ValueForKey(this IDictionary o, String key) {
-            // First, try to get a value from the dictionary. If not found, call super.
+            // First, try to get a value from the dictionary.
 
             if (o.Contains(key)) {
                 return o[key];
@@ -26,6 +26,5 @@ namespace KNFoundation.KNKVC {
 
             o.Add(key, value);
         }
-
     }
 }

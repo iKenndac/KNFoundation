@@ -32,6 +32,7 @@ namespace KNKVC_Test
 
             plist.Add("Name", "Daniel");
             plist.Add("Age", 12);
+            plist.Add("Height", 6.2);
             plist.Add("Birthday", new DateTime(1985, 04, 15));
             plist.Add("Awesome?", true);
             plist.Add("Data", new byte[] { 0, 0, 0, 0 });
@@ -51,9 +52,13 @@ namespace KNKVC_Test
 
             plist.Add("Colors", colors);
 
-            MessageBox.Show(KNBundle.MainBundle().ShortVersionString);
-            MessageBox.Show(KNBundle.MainBundle().BundleIdentifier);
-            MessageBox.Show(KNBundle.MainBundle().ExecutablePath);
+            MessageBox.Show(KNBundle.MainBundle().ShortVersionString + Environment.NewLine + KNBundle.MainBundle().BundleIdentifier + Environment.NewLine + KNBundle.MainBundle().ExecutablePath);
+
+            Dictionary<string, object> defaults = new Dictionary<string, object>();
+            defaults.Add("testKey", "Default value");
+
+            KNUserDefaults.StandardUserDefaults().Defaults = defaults;
+
 
         }
 
@@ -123,6 +128,15 @@ namespace KNKVC_Test
 
             MessageBox.Show(prefs.Keys.Count.ToString());
 
+        }
+
+        private void button10_Click(object sender, EventArgs e) {
+
+            KNUserDefaults.StandardUserDefaults().SetStringForKey("Set Value", "testKey");
+        }
+
+        private void button9_Click(object sender, EventArgs e) {
+            MessageBox.Show(KNUserDefaults.StandardUserDefaults().StringForKey("testKey"));
         }
     }
 }
