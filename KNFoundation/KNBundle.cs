@@ -98,7 +98,6 @@ namespace KNFoundation {
             }
 
             bundle = new KNBundle(path);
-            bundleCache.Add(path, bundle);
 
             return bundle;
         }
@@ -111,6 +110,11 @@ namespace KNFoundation {
         private Dictionary<string, object> infoDictionary; // Equivalent to info.plist
 
         private KNBundle(string path) {
+
+            // Add ourselves to the cache here, to work around the fact we need a working bundle
+            // to locate the DTD file to parse the info.plist.
+            bundleCache.Add(path, this);
+
             BundlePath = path;
             infoDictionary = ParseBundleInfoPlist();
             stringsCache = new Dictionary<string, Dictionary<string, string>>();
@@ -365,7 +369,7 @@ namespace KNFoundation {
         public string ExecutablePath {
             get {
                 if (InfoDictionary.ContainsKey(KNBundleExecutableKey)) {
-                    return (string)InfoDictionary.ValueForKey(KNBundleExecutableKey);
+                    return Path.Combine(BundlePath, (string)InfoDictionary.ValueForKey(KNBundleExecutableKey));
                 } else {
                     return null;
                 }

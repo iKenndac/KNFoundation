@@ -105,6 +105,9 @@
     <Content Include="Resources\PropertyList-1.0.dtd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\Info.plist">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KNFoundation\KNFoundation.csproj">

@@ -51,6 +51,10 @@ namespace KNKVC_Test
 
             plist.Add("Colors", colors);
 
+            MessageBox.Show(KNBundle.MainBundle().ShortVersionString);
+            MessageBox.Show(KNBundle.MainBundle().BundleIdentifier);
+            MessageBox.Show(KNBundle.MainBundle().ExecutablePath);
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -104,9 +108,11 @@ namespace KNKVC_Test
 
         private void button7_Click(object sender, EventArgs e) {
 
-            MessageBox.Show(plist.Keys.Count.ToString());
+            string plistStr = Encoding.UTF8.GetString(KNPropertyListSerialization.DataWithPropertyList(plist));
 
-            MessageBox.Show(Encoding.UTF8.GetString(KNPropertyListSerialization.DataWithPropertyList(plist)));
+            Clipboard.SetText(plistStr);
+
+            MessageBox.Show(plistStr);
 
 
         }
