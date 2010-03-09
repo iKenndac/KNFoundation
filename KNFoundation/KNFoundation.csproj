@@ -54,6 +54,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -86,6 +87,8 @@
     <Compile Include="KNPropertyListSerialization.cs" />
     <Compile Include="KNStringExtensions.cs" />
     <Compile Include="KNUserDefaults.cs" />
+    <Compile Include="KNViewController.cs" />
+    <Compile Include="KNWindowController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
