@@ -21,13 +21,18 @@ namespace KNFoundation {
 
     public class KNUserDefaults {
 
-        private static KNUserDefaults sharedInstance;
+        private static Dictionary<string, KNUserDefaults> defaultsCache = new Dictionary<string, KNUserDefaults>();
 
         public static KNUserDefaults StandardUserDefaults() {
-            if (sharedInstance == null) {
-                sharedInstance = new KNUserDefaults(KNBundle.MainBundle().BundleIdentifier);
+            return UserDefaultsForDomain(KNBundle.MainBundle().BundleIdentifier);
+        }
+
+        public static KNUserDefaults UserDefaultsForDomain(string domain) {
+
+            if (!defaultsCache.ContainsKey(domain)) {
+                defaultsCache.Add(domain, new KNUserDefaults(domain));
             }
-            return sharedInstance;
+            return (KNUserDefaults)defaultsCache.ValueForKey(domain);
         }
 
         // ----
@@ -37,7 +42,7 @@ namespace KNFoundation {
         private Dictionary<string, object> defaults;
         private Dictionary<string, object> userDefaults;
 
-        public KNUserDefaults(string domain) {
+        private KNUserDefaults(string domain) {
             Domain = domain;
 
             try {
