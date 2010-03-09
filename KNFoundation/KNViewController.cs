@@ -33,19 +33,7 @@ namespace KNFoundation {
 
                     // Find our properties, then search for controls with the same name
 
-                    Type myType = GetType();
-                    PropertyInfo[] properties = myType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-
-                    foreach (PropertyInfo property in properties) {
-
-                        if (property.CanWrite) {
-
-                            Object item = LogicalTreeHelper.FindLogicalNode(rootElement, property.Name);
-                            if (item != null) {
-                                property.SetValue(this, item, null);
-                            }
-                        }
-                    }
+                    MatchPropertiesToViewTree(rootElement);
 
                     s.Dispose();
 
@@ -56,6 +44,31 @@ namespace KNFoundation {
             } catch {
                 throw;
             }
+        }
+
+        public KNViewController(DependencyObject view) {
+
+            View = (UserControl)view;
+            MatchPropertiesToViewTree(view);
+
+        }
+
+        private void MatchPropertiesToViewTree(DependencyObject obj) {
+
+            Type myType = GetType();
+            PropertyInfo[] properties = myType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+
+            foreach (PropertyInfo property in properties) {
+
+                if (property.CanWrite) {
+
+                    Object item = LogicalTreeHelper.FindLogicalNode(obj, property.Name);
+                    if (item != null) {
+                        property.SetValue(this, item, null);
+                    }
+                }
+            }
+
         }
 
         #region "Properties"

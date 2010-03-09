@@ -40,6 +40,10 @@ namespace KNFoundation {
             }
         }
 
+        public KNWindowController(Window window) {
+            Window = window;
+        }
+
         public void ShowWindow() {
             // We want to make sure the window has been rendered fully 
             // before showing it. 
