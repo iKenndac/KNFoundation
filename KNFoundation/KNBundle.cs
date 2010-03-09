@@ -5,8 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Media.Imaging;
+using System.Windows;
+using System.Windows.Interop;
 using KNFoundation.KNKVC;
 using System.Globalization;
+using System.Drawing;
 using System.Threading;
 using System.Reflection;
 
@@ -77,6 +80,7 @@ namespace KNFoundation {
         public const string KNBundleIdentifierKey = "KNBundleIdentifier";
         public const string KNBundleNameKey = "KNBundleName";
         public const string KNBundleDisplayNameKey = "KNBundleDisplayName";
+        public const string KNBundleIconFileKey = "KNBundleIconFile";
 
         // This is an approximation of the NSBundle class. Yay!
         static Dictionary<string, KNBundle> bundleCache = new Dictionary<string, KNBundle>();
@@ -315,6 +319,44 @@ namespace KNFoundation {
         }
 
         #region Info Convenience Properties
+
+        public BitmapSource BundleIcon {
+            get {
+
+                if (InfoDictionary.ContainsKey(KNBundleIconFileKey)) {
+                    BitmapImage icon = KNBundleGlobalHelpers.ImageNamed((string)InfoDictionary.ValueForKey(KNBundleIconFileKey));
+                    if (icon != null) {
+                        return icon;
+                    }
+                }
+
+                if (!String.IsNullOrWhiteSpace(ExecutablePath) && File.Exists(ExecutablePath)) {
+
+                    return BitmapSourceFromBitmap(Icon.ExtractAssociatedIcon(ExecutablePath).ToBitmap());
+                }
+
+                if (!String.IsNullOrWhiteSpace(BundlePath) && Directory.Exists(BundlePath)) {
+                    return BitmapSourceFromBitmap(Icon.ExtractAssociatedIcon(BundlePath).ToBitmap());
+                    
+                }
+
+                return null;
+
+            }
+        }
+
+        private BitmapSource BitmapSourceFromBitmap(Bitmap icon) {
+            
+            IntPtr hBitmap = icon.GetHbitmap();
+
+            BitmapSource bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
+                hBitmap,
+                IntPtr.Zero,
+                Int32Rect.Empty,
+                System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+
+            return bitmapSource;
+        }
 
         public string Name {
             get {
