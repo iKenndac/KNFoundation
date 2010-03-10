@@ -29,7 +29,7 @@ namespace KNFoundation {
 
         public static KNUserDefaults UserDefaultsForDomain(string domain) {
 
-            if (!defaultsCache.ContainsKey(domain)) {
+            if (!String.IsNullOrWhiteSpace(domain) && !defaultsCache.ContainsKey(domain)) {
                 defaultsCache.Add(domain, new KNUserDefaults(domain));
             }
             return (KNUserDefaults)defaultsCache.ValueForKey(domain);
@@ -45,20 +45,22 @@ namespace KNFoundation {
         private KNUserDefaults(string domain) {
             Domain = domain;
 
-            try {
-                string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                if (Directory.Exists(path)) {
-                    path = Path.Combine(path, Domain + ".plist");
-                    if (File.Exists(path)) {
-                        Dictionary<string, object> plist = KNPropertyListSerialization.PropertyListWithData(File.ReadAllBytes(path));
-                        if (plist != null) {
-                            userDefaults = plist;
-                        } else {
-                            userDefaults = new Dictionary<string, object>();
+            if (!String.IsNullOrWhiteSpace(domain)) {
+                try {
+                    string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    if (Directory.Exists(path)) {
+                        path = Path.Combine(path, Domain + ".plist");
+                        if (File.Exists(path)) {
+                            Dictionary<string, object> plist = KNPropertyListSerialization.PropertyListWithData(File.ReadAllBytes(path));
+                            if (plist != null) {
+                                userDefaults = plist;
+                            } else {
+                                userDefaults = new Dictionary<string, object>();
+                            }
                         }
                     }
-                }
-            } catch { }
+                } catch { }
+            }
         }
 
         ~KNUserDefaults() {
@@ -69,7 +71,7 @@ namespace KNFoundation {
 
         public void Synchronise() {
 
-            if (userDefaults != null && userDefaults.Keys.Count > 0) {
+            if (!String.IsNullOrWhiteSpace(Domain) && userDefaults != null && userDefaults.Keys.Count > 0) {
 
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                 if (!Directory.Exists(path)) {
