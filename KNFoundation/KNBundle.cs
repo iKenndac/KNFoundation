@@ -45,7 +45,7 @@ namespace KNFoundation {
 
             // We cache the images we find for performance reasons. 
 
-            if (String.IsNullOrWhiteSpace(imageName)) {
+            if (String.IsNullOrEmpty(imageName)) {
                 return null;
             }
 
@@ -60,7 +60,7 @@ namespace KNFoundation {
 
             string path = KNBundle.MainBundle().PathForResourceOfTypeInDirectory(imageName, null, directoryName);
 
-            if (!string.IsNullOrWhiteSpace(path)) {
+            if (!string.IsNullOrEmpty(path)) {
                 BitmapImage img = new BitmapImage(new Uri(path));
                 imageCache.Add(name, img);
                 return img;
@@ -136,7 +136,7 @@ namespace KNFoundation {
 
         public string LocalizedStringForKeyValueTable(string key, string value, string table) {
 
-            if (String.IsNullOrWhiteSpace(table)) {
+            if (String.IsNullOrEmpty(table)) {
                 table = "Localizable";
             }
 
@@ -162,7 +162,7 @@ namespace KNFoundation {
             Dictionary<string, string> namesAndPaths = new Dictionary<string, string>();
 
             string nonLocalisedPathToSearch = ResourcesPath;
-            if (!String.IsNullOrWhiteSpace(subDirectory)) {
+            if (!String.IsNullOrEmpty(subDirectory)) {
                 nonLocalisedPathToSearch = Path.Combine(ResourcesPath, subDirectory);
             }
 
@@ -181,7 +181,7 @@ namespace KNFoundation {
             // Now do localized. The localized should override the non-localized.
 
             string localisedPathToSearch = LocalisedResourcesPath;
-            if (!String.IsNullOrWhiteSpace(subDirectory)) {
+            if (!String.IsNullOrEmpty(subDirectory)) {
                 localisedPathToSearch = Path.Combine(LocalisedResourcesPath, subDirectory);
             }
 
@@ -211,15 +211,15 @@ namespace KNFoundation {
 
 
             string resourceFinalName = resourceName;
-            if (!String.IsNullOrWhiteSpace(resourceType)) {
+            if (!String.IsNullOrEmpty(resourceType)) {
                 resourceFinalName += "." + resourceType;
             }
 
             // Matching NSBundle behaviour, we check for non-resources first.
 
             string filePath;
-            if (!String.IsNullOrWhiteSpace(subDirectory)) {
-                filePath = Path.Combine(ResourcesPath, subDirectory, resourceFinalName);
+            if (!String.IsNullOrEmpty(subDirectory)) {
+                filePath = Path.Combine(ResourcesPath, Path.Combine(subDirectory, resourceFinalName));
             } else {
                 filePath = Path.Combine(ResourcesPath, resourceFinalName);
             }
@@ -228,8 +228,8 @@ namespace KNFoundation {
                 return filePath;
             }
 
-            if (!String.IsNullOrWhiteSpace(subDirectory)) {
-                filePath = Path.Combine(LocalisedResourcesPath, subDirectory, resourceFinalName);
+            if (!String.IsNullOrEmpty(subDirectory)) {
+                filePath = Path.Combine(LocalisedResourcesPath, Path.Combine(subDirectory, resourceFinalName));
             } else {
                 filePath = Path.Combine(LocalisedResourcesPath, resourceFinalName);
             }
@@ -245,7 +245,7 @@ namespace KNFoundation {
 
             string infoPath = PathForResourceOfType("Info", "plist");
 
-            if (!String.IsNullOrWhiteSpace(infoPath) && File.Exists(infoPath)) {
+            if (!String.IsNullOrEmpty(infoPath) && File.Exists(infoPath)) {
 
                 try {
                     return KNPropertyListSerialization.PropertyListWithData(File.ReadAllBytes(infoPath));
@@ -300,7 +300,7 @@ namespace KNFoundation {
 
                         value = line.Substring(openingValueDelimiter + 1, closingValueDelimiter - openingValueDelimiter - 1);
 
-                        if (!String.IsNullOrWhiteSpace(key) && !String.IsNullOrWhiteSpace(value)) {
+                        if (!String.IsNullOrEmpty(key) && !String.IsNullOrEmpty(value)) {
                             stringsTable.Add(key.DeEscapedString(), value.DeEscapedString());
                         }
 
@@ -330,12 +330,12 @@ namespace KNFoundation {
                     }
                 }
 
-                if (!String.IsNullOrWhiteSpace(ExecutablePath) && File.Exists(ExecutablePath)) {
+                if (!String.IsNullOrEmpty(ExecutablePath) && File.Exists(ExecutablePath)) {
 
                     return BitmapSourceFromBitmap(Icon.ExtractAssociatedIcon(ExecutablePath).ToBitmap());
                 }
 
-                if (!String.IsNullOrWhiteSpace(BundlePath) && Directory.Exists(BundlePath)) {
+                if (!String.IsNullOrEmpty(BundlePath) && Directory.Exists(BundlePath)) {
                     return BitmapSourceFromBitmap(Icon.ExtractAssociatedIcon(BundlePath).ToBitmap());
                     
                 }

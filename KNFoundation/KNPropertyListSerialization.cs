@@ -207,7 +207,7 @@ namespace KNFoundation {
 
             ArrayList plistRep = new ArrayList();
 
-            if (!String.IsNullOrWhiteSpace(key)) {
+            if (!String.IsNullOrEmpty(key)) {
                 plistRep.Add(KeyElementForKey(key, doc));
             }
 
@@ -222,7 +222,7 @@ namespace KNFoundation {
 
             ArrayList plistRep = new ArrayList();
 
-            if (!String.IsNullOrWhiteSpace(key)) {
+            if (!String.IsNullOrEmpty(key)) {
                 plistRep.Add(KeyElementForKey(key, doc));
             }
 
@@ -237,7 +237,7 @@ namespace KNFoundation {
 
             ArrayList plistRep = new ArrayList();
 
-            if (!String.IsNullOrWhiteSpace(key)) {
+            if (!String.IsNullOrEmpty(key)) {
                 plistRep.Add(KeyElementForKey(key, doc));
             }
 
@@ -251,7 +251,7 @@ namespace KNFoundation {
 
             ArrayList plistRep = new ArrayList();
 
-            if (!String.IsNullOrWhiteSpace(key)) {
+            if (!String.IsNullOrEmpty(key)) {
                 plistRep.Add(KeyElementForKey(key, doc));
             }
 
@@ -266,7 +266,7 @@ namespace KNFoundation {
 
             ArrayList plistRep = new ArrayList();
 
-            if (!String.IsNullOrWhiteSpace(key)) {
+            if (!String.IsNullOrEmpty(key)) {
                 plistRep.Add(KeyElementForKey(key, doc));
             }
 
@@ -281,7 +281,7 @@ namespace KNFoundation {
 
             ArrayList plistRep = new ArrayList();
 
-            if (!String.IsNullOrWhiteSpace(key)) {
+            if (!String.IsNullOrEmpty(key)) {
                 plistRep.Add(KeyElementForKey(key, doc));
             }
 
@@ -296,7 +296,7 @@ namespace KNFoundation {
 
             ArrayList plistRep = new ArrayList();
 
-            if (!String.IsNullOrWhiteSpace(key)) {
+            if (!String.IsNullOrEmpty(key)) {
                 plistRep.Add(KeyElementForKey(key, doc));
             }
 
@@ -346,7 +346,7 @@ namespace KNFoundation {
 
             ArrayList plistRep = new ArrayList();
 
-            if (!String.IsNullOrWhiteSpace(key)) {
+            if (!String.IsNullOrEmpty(key)) {
                 plistRep.Add(KeyElementForKey(key, doc));
             }
 

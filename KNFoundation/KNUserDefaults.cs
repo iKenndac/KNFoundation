@@ -29,7 +29,7 @@ namespace KNFoundation {
 
         public static KNUserDefaults UserDefaultsForDomain(string domain) {
 
-            if (!String.IsNullOrWhiteSpace(domain) && !defaultsCache.ContainsKey(domain)) {
+            if (!String.IsNullOrEmpty(domain) && !defaultsCache.ContainsKey(domain)) {
                 defaultsCache.Add(domain, new KNUserDefaults(domain));
             }
             return (KNUserDefaults)defaultsCache.ValueForKey(domain);
@@ -45,7 +45,7 @@ namespace KNFoundation {
         private KNUserDefaults(string domain) {
             Domain = domain;
 
-            if (!String.IsNullOrWhiteSpace(domain)) {
+            if (!String.IsNullOrEmpty(domain)) {
                 try {
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                     if (Directory.Exists(path)) {
@@ -71,7 +71,7 @@ namespace KNFoundation {
 
         public void Synchronise() {
 
-            if (!String.IsNullOrWhiteSpace(Domain) && userDefaults != null && userDefaults.Keys.Count > 0) {
+            if (!String.IsNullOrEmpty(Domain) && userDefaults != null && userDefaults.Keys.Count > 0) {
 
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                 if (!Directory.Exists(path)) {
@@ -115,7 +115,7 @@ namespace KNFoundation {
 
         public void SetObjectForKey(object obj, string key) {
 
-            if (!String.IsNullOrWhiteSpace(key)) {
+            if (!String.IsNullOrEmpty(key)) {
 
                 this.WillChangeValueForKey(key);
 
