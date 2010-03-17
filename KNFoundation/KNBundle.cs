@@ -12,6 +12,7 @@ using System.Globalization;
 using System.Drawing;
 using System.Threading;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 
 namespace KNFoundation {
@@ -336,6 +337,7 @@ namespace KNFoundation {
                 }
 
                 if (!String.IsNullOrEmpty(BundlePath) && Directory.Exists(BundlePath)) {
+
                     return BitmapSourceFromBitmap(Icon.ExtractAssociatedIcon(BundlePath).ToBitmap());
                     
                 }
@@ -358,6 +360,7 @@ namespace KNFoundation {
             return bitmapSource;
         }
 
+  
         public string Name {
             get {
                 if (InfoDictionary.ContainsKey(KNBundleNameKey)) {
@@ -402,9 +405,17 @@ namespace KNFoundation {
             get {
                 if (InfoDictionary.ContainsKey(KNBundleVersionKey)) {
                     return (string)InfoDictionary.ValueForKey(KNBundleVersionKey);
-                } else {
-                    return null;
                 }
+
+                if (InfoDictionary.ContainsKey(KNBundleExecutableKey)) {
+                    string assemblyPath = (string)InfoDictionary.ValueForKey(KNBundleExecutableKey);
+                    try {
+                        AssemblyName name = AssemblyName.GetAssemblyName(assemblyPath);
+                        return name.Version.ToString();
+                    } catch {
+                    }
+                }
+                return null;
             }
         }
 
