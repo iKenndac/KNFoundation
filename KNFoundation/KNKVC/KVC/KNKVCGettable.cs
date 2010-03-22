@@ -4,6 +4,7 @@ using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using System.Windows;
 
 namespace KNFoundation.KNKVC {
     public static class KNKVCGettable {
@@ -41,6 +42,10 @@ namespace KNFoundation.KNKVC {
 
             if (typeof(IDictionary).IsAssignableFrom(o.GetType())) {
                 return KNDictionaryKVC.ValueForKey((IDictionary)o, key);
+            }
+
+            if (typeof(DependencyObject).IsAssignableFrom(o.GetType())) {
+                return KNDependencyObjectKVC.ValueForKey((DependencyObject)o, key);
             }
 
             try {

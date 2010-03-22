@@ -21,6 +21,26 @@ namespace KNFoundation {
 
     public abstract class KNBundleGlobalHelpers {
 
+        public static void AttemptToLocalizeComponent(DependencyObject obj) {
+
+            if (obj == null) {
+                return;
+            }
+
+            string tableName = obj.GetType().ToString() + "Strings";
+            Dictionary<string, string> table = KNBundle.BundleWithAssembly(Assembly.GetAssembly(obj.GetType())).LocalizedStringTableWithName(tableName);
+
+            if (table != null) {
+
+                foreach (string key in table.Keys) {
+
+                    try {
+                        obj.SetValueForKeyPath(table.ValueForKey(key), key);
+                    } catch { }
+                }
+            }
+        }
+
         public static string KNLocalizedString(string key, string comment) {
             return KNBundle.MainBundle().LocalizedStringForKeyValueTable(key, null, null);
         }
@@ -91,7 +111,7 @@ namespace KNFoundation {
         public static KNBundle MainBundle() {
 
             FileInfo appInfo = new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location);
-            return KNBundle.BundleWithPath(appInfo.DirectoryName);
+            return KNBundle.BundleWithDirectoryPath(appInfo.DirectoryName);
         }
 
         public static KNBundle BundleWithAssembly(Assembly assembly) {
@@ -117,7 +137,7 @@ namespace KNFoundation {
             }
         }
 
-        public static KNBundle BundleWithPath(string path) {
+        public static KNBundle BundleWithDirectoryPath(string path) {
 
             KNBundle bundle;
 
@@ -160,8 +180,13 @@ namespace KNFoundation {
         }
 
         private void CacheStrings(Assembly assembly) {
-            // Pre-cache strings files.
+            
+            // Erase existing caches 
 
+            stringsCache.Clear();            
+            
+            // Pre-cache strings files.
+            
             foreach (string stringsFilePath in PathsForResourcesOfType("strings")) {
 
                 Dictionary<string, string> stringsTable = AttemptToParseStringsFile(stringsFilePath);

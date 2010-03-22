@@ -18,5 +18,6 @@
         <Label Content="User Defaults" FontWeight="Bold" Height="24" HorizontalAlignment="Left" Margin="155,130,0,0" Name="label4" VerticalAlignment="Top" Width="90" />
         <Button Content="Set Value" Height="23" HorizontalAlignment="Left" Margin="170,160,0,0" Name="button9" VerticalAlignment="Top" Width="117" Click="button9_Click" />
         <Button Content="Get Value" Height="23" HorizontalAlignment="Left" Margin="170,189,0,0" Name="button10" VerticalAlignment="Top" Width="117" Click="button10_Click" />
-     </Grid>
+        <Button Content="Localize Me!" Height="23" HorizontalAlignment="Left" Margin="27,276,0,0" Name="button11" VerticalAlignment="Top" Width="117" Click="button11_Click" />
+    </Grid>
 </Window>

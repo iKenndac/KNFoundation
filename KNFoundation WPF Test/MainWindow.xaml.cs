@@ -66,6 +66,7 @@ namespace KNFoundation_WPF_Test {
             image1.Source = KNBundle.MainBundle().LargeBundleIcon;
 
             MessageBox.Show(KNBundleGlobalHelpers.KNLocalizedStringFromTable("Test", this.GetType().ToString() + "Strings", ""));
+
         }
         
         #region KNKVOObserver Members
@@ -131,6 +132,10 @@ namespace KNFoundation_WPF_Test {
 
         private void button10_Click(object sender, RoutedEventArgs e) {
             MessageBox.Show(KNUserDefaults.StandardUserDefaults().StringForKey("testKey"));
+        }
+
+        private void button11_Click(object sender, RoutedEventArgs e) {
+            KNBundleGlobalHelpers.AttemptToLocalizeComponent(this);
         }
 
 
