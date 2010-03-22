@@ -51,6 +51,8 @@ namespace KNFoundation {
 
             View = (UserControl)view;
             MatchPropertiesToViewTree(view);
+            KNBundleGlobalHelpers.AttemptToLocalizeComponent(View);
+
 
         }
 
