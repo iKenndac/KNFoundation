@@ -103,13 +103,13 @@ namespace KNFoundation {
 
                 KNBundle bundle;
 
-                if (bundleCache.ContainsKey(parentPath)) {
-                    if (bundleCache.TryGetValue(parentPath, out bundle)) {
+                if (bundleCache.ContainsKey(path)) {
+                    if (bundleCache.TryGetValue(path, out bundle)) {
                         return bundle;
                     }
                 }
 
-                bundle = new KNBundle(parentPath, path);
+                bundle = new KNBundle(parentPath, path, assembly);
                 return bundle;
 
             } else {
@@ -139,10 +139,11 @@ namespace KNFoundation {
         private Dictionary<string, Dictionary<string, string>> stringsCache;
         private Dictionary<string, object> infoDictionary; // Equivalent to info.plist
 
-        private KNBundle(string path, string executablePath) : this(path) {
-            if (!infoDictionary.ContainsKey(KNBundleExecutableKey)) {
-                infoDictionary.SetValueForKey(executablePath, KNBundleExecutableKey);
-            }
+        private KNBundle(string path, string executablePath, Assembly assembly)
+            : this(executablePath) {
+            
+           infoDictionary.SetValueForKey(executablePath, KNBundleExecutableKey);
+           CacheStrings(assembly);
         }
 
         private KNBundle(string path) {
@@ -155,6 +156,10 @@ namespace KNFoundation {
             infoDictionary = ParseBundleInfoPlist();
             stringsCache = new Dictionary<string, Dictionary<string, string>>();
 
+            CacheStrings(null);
+        }
+
+        private void CacheStrings(Assembly assembly) {
             // Pre-cache strings files.
 
             foreach (string stringsFilePath in PathsForResourcesOfType("strings")) {
@@ -167,7 +172,13 @@ namespace KNFoundation {
 
             // Also pre-cache any strings in the assembly's embedded resource files
 
-            Assembly assembly = Assembly.GetEntryAssembly();
+            if (assembly == null) {
+                if (InfoDictionary.ContainsKey(KNBundleExecutableKey)) {
+                    assembly = Assembly.LoadFrom(Path.Combine(BundlePath, (string)InfoDictionary.ValueForKey(KNBundleExecutableKey)));
+                } else {
+                    assembly = Assembly.GetEntryAssembly();
+                }
+            }
 
             foreach (string resourcesFileName in assembly.GetManifestResourceNames()) {
 
@@ -178,7 +189,6 @@ namespace KNFoundation {
                     stringsCache.Add(tableName, stringsTable);
                 }
             }
-
         }
 
         public string LocalizedStringForKeyValueTable(string key, string value, string table) {
