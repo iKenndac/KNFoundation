@@ -47,7 +47,7 @@ namespace KNFoundation {
 
         public KNWindowController(Window window) {
             Window = window;
-            KNBundleGlobalHelpers.AttemptToLocalizeComponent(View);
+            KNBundleGlobalHelpers.AttemptToLocalizeComponent(Window);
 
         }
 
