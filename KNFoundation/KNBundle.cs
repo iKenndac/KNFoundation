@@ -170,6 +170,20 @@ namespace KNFoundation {
             return value;
         }
 
+        public Dictionary<string, string> LocalizedStringTableWithName(string table) {
+
+            if (String.IsNullOrEmpty(table)) {
+                table = "Localizable";
+            }
+
+            Dictionary<string, string> stringsTable;
+
+            if (stringsCache.TryGetValue(table, out stringsTable)) {
+                return stringsTable;
+            } else {
+                return null;
+            }
+        }
 
         public string[] PathsForResourcesOfType(string type) {
             return PathsForResourcesOfTypeInDirectory(type, null);
