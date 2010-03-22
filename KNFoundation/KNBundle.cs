@@ -94,6 +94,29 @@ namespace KNFoundation {
             return KNBundle.BundleWithPath(appInfo.DirectoryName);
         }
 
+        public static KNBundle BundleWithAssembly(Assembly assembly) {
+
+            if (assembly != null) {
+
+                string path = assembly.Location;
+                string parentPath = Path.GetDirectoryName(path);
+
+                KNBundle bundle;
+
+                if (bundleCache.ContainsKey(parentPath)) {
+                    if (bundleCache.TryGetValue(parentPath, out bundle)) {
+                        return bundle;
+                    }
+                }
+
+                bundle = new KNBundle(parentPath, path);
+                return bundle;
+
+            } else {
+                return null;
+            }
+        }
+
         public static KNBundle BundleWithPath(string path) {
 
             KNBundle bundle;
@@ -115,6 +138,12 @@ namespace KNFoundation {
         private string cachedLocalisedResourcesPath;
         private Dictionary<string, Dictionary<string, string>> stringsCache;
         private Dictionary<string, object> infoDictionary; // Equivalent to info.plist
+
+        private KNBundle(string path, string executablePath) : this(path) {
+            if (!infoDictionary.ContainsKey(KNBundleExecutableKey)) {
+                infoDictionary.SetValueForKey(executablePath, KNBundleExecutableKey);
+            }
+        }
 
         private KNBundle(string path) {
 
