@@ -13,6 +13,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using KNFoundation.KNKVC;
 using System.Collections;
+using System.Threading;
+using System.Resources;
+using System.Reflection;
 using KNFoundation;
 
 namespace KNFoundation_WPF_Test {
@@ -61,9 +64,10 @@ namespace KNFoundation_WPF_Test {
 
             KNUserDefaults.StandardUserDefaults().Defaults = defaults;
             image1.Source = KNBundle.MainBundle().LargeBundleIcon;
+
+            MessageBox.Show(KNBundleGlobalHelpers.KNLocalizedStringFromTable("Test", this.GetType().ToString() + "Strings", ""));
         }
-
-
+        
         #region KNKVOObserver Members
 
         public void ObserveValueForKeyPathOfObject(string keyPath, object obj, Dictionary<string, object> change, object context) {

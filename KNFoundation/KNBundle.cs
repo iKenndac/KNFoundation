@@ -7,12 +7,14 @@ using System.Text;
 using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Windows.Interop;
+using System.Resources;
 using KNFoundation.KNKVC;
 using System.Globalization;
 using System.Drawing;
 using System.Threading;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 
 namespace KNFoundation {
@@ -133,6 +135,21 @@ namespace KNFoundation {
                     stringsCache.Add(Path.GetFileNameWithoutExtension(stringsFilePath), stringsTable);
                 }
             }
+
+            // Also pre-cache any strings in the assembly's embedded resource files
+
+            Assembly assembly = Assembly.GetEntryAssembly();
+
+            foreach (string resourcesFileName in assembly.GetManifestResourceNames()) {
+
+                string tableName = resourcesFileName.Replace(".resources", "");
+
+                Dictionary<string, string> stringsTable = ExtractStringsFromResourcesFile(resourcesFileName, assembly);
+                if (stringsTable.Count > 0 && !stringsCache.ContainsKey(resourcesFileName)) {
+                    stringsCache.Add(tableName, stringsTable);
+                }
+            }
+
         }
 
         public string LocalizedStringForKeyValueTable(string key, string value, string table) {
@@ -254,6 +271,32 @@ namespace KNFoundation {
                 }
             }
             return new Dictionary<string, object>();
+        }
+
+        private Dictionary<string, string> ExtractStringsFromResourcesFile(string resourcesFileName, Assembly assembly) {
+
+            Dictionary<string, string> stringsTable = new Dictionary<string, string>();
+
+            try {
+
+                ResourceManager manager = new ResourceManager(resourcesFileName.Replace(".resources", ""), assembly);
+                ResourceSet set = manager.GetResourceSet(Thread.CurrentThread.CurrentCulture, true, true);
+
+                if (set != null) {
+
+                    foreach (DictionaryEntry resourceString in set) {
+                        if (!stringsTable.ContainsKey(resourceString.Key.ToString())) {
+                            if (resourceString.Value.GetType() == typeof(string)) {
+                                stringsTable.Add(resourceString.Key.ToString(), resourceString.Value.ToString());
+                            }
+                        }
+                    }
+                }
+
+            } catch (Exception ex) { System.Windows.MessageBox.Show(ex.Message); } 
+            
+
+            return stringsTable;
         }
 
         private Dictionary<string, string> AttemptToParseStringsFile(string path) {
