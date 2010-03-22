@@ -71,6 +71,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IconExtractor.cs" />
     <Compile Include="KNBundle.cs" />
     <Compile Include="KNKVC\KVC\KNDictionaryKVC.cs" />
     <Compile Include="KNKVC\KVC\KNKVCMethodInvokeFailedException.cs" />

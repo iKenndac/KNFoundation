@@ -60,7 +60,7 @@ namespace KNFoundation_WPF_Test {
             defaults.Add("testKey", "Default value");
 
             KNUserDefaults.StandardUserDefaults().Defaults = defaults;
-            image1.Source = KNBundle.MainBundle().BundleIcon;
+            image1.Source = KNBundle.MainBundle().LargeBundleIcon;
         }
 
 
