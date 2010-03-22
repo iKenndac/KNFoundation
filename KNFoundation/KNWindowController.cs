@@ -29,6 +29,11 @@ namespace KNFoundation {
                     Object rootElement = (Object)XamlReader.Load(s);
                     Window newWindow = (Window)rootElement;
                     Window = newWindow;
+
+                    // Attempt to localise
+
+                    KNBundleGlobalHelpers.AttemptToLocalizeComponent(Window);
+
                     s.Dispose();
 
                 } else {

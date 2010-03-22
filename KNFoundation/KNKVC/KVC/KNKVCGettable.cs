@@ -45,7 +45,14 @@ namespace KNFoundation.KNKVC {
             }
 
             if (typeof(DependencyObject).IsAssignableFrom(o.GetType())) {
-                return KNDependencyObjectKVC.ValueForKey((DependencyObject)o, key);
+                
+                // Try to search the dependency object for a sub item, then 
+                // check its properties.
+
+                Object obj = KNDependencyObjectKVC.ValueForKey((DependencyObject)o, key);
+                if (obj != null) {
+                    return obj;
+                }
             }
 
             try {

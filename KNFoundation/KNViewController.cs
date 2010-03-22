@@ -20,9 +20,6 @@ namespace KNFoundation {
         public KNViewController(string viewXamlName) {
 
             try {
-
-
-
                 string xamlPath = KNBundle.MainBundle().PathForResourceOfType(viewXamlName, "xaml");
                 if (xamlPath != null) {
 
@@ -34,6 +31,10 @@ namespace KNFoundation {
                     // Find our properties, then search for controls with the same name
 
                     MatchPropertiesToViewTree(rootElement);
+
+                    // Attempt to localise
+
+                    KNBundleGlobalHelpers.AttemptToLocalizeComponent(View);
 
                     s.Dispose();
 
