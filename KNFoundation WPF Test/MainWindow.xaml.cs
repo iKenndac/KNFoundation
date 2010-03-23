@@ -65,8 +65,6 @@ namespace KNFoundation_WPF_Test {
             KNUserDefaults.StandardUserDefaults().Defaults = defaults;
             image1.Source = KNBundle.MainBundle().LargeBundleIcon;
 
-            MessageBox.Show(KNBundleGlobalHelpers.KNLocalizedStringFromTable("Test", this.GetType().ToString() + "Strings", ""));
-
         }
         
         #region KNKVOObserver Members

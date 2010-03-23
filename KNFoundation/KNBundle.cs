@@ -27,8 +27,18 @@ namespace KNFoundation {
                 return;
             }
 
-            string tableName = obj.GetType().ToString() + "Strings";
-            Dictionary<string, string> table = KNBundle.BundleWithAssembly(Assembly.GetAssembly(obj.GetType())).LocalizedStringTableWithName(tableName);
+            KNBundle bundle = KNBundle.BundleWithAssembly(Assembly.GetAssembly(obj.GetType()));
+
+            // Search for a table named directly after the object, or the name of the object 
+            // plus "Strings". I.e., KNFoundation.KNBundle or KNFoundation.KNBundleStrings.
+
+            string tableName = obj.GetType().ToString();
+            Dictionary<string, string> table = bundle.LocalizedStringTableWithName(tableName);
+
+            if (table == null) {
+                tableName = obj.GetType().ToString() + "Strings";
+                table = bundle.LocalizedStringTableWithName(tableName);
+            }
 
             if (table != null) {
 
