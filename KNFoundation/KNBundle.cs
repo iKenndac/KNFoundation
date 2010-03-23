@@ -104,6 +104,7 @@ namespace KNFoundation {
         public const string KNBundleNameKey = "KNBundleName";
         public const string KNBundleDisplayNameKey = "KNBundleDisplayName";
         public const string KNBundleIconFileKey = "KNBundleIconFile";
+        public const string KNStringTableRepresentedClassKey = "KNStringTableRepresentedClass";
 
         // This is an approximation of the NSBundle class. Yay!
         static Dictionary<string, KNBundle> bundleCache = new Dictionary<string, KNBundle>();
@@ -208,8 +209,12 @@ namespace KNFoundation {
             foreach (string resourcesFileName in assembly.GetManifestResourceNames()) {
 
                 string tableName = resourcesFileName.Replace(".resources", "");
-
                 Dictionary<string, string> stringsTable = ExtractStringsFromResourcesFile(resourcesFileName, assembly);
+
+                if (stringsTable.ContainsKey(KNStringTableRepresentedClassKey)) {
+                    tableName = (string)stringsTable.ValueForKey(KNStringTableRepresentedClassKey);
+                }
+
                 if (stringsTable.Count > 0 && !stringsCache.ContainsKey(resourcesFileName)) {
                     stringsCache.Add(tableName, stringsTable);
                 }
