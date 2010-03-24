@@ -225,7 +225,12 @@ namespace KNFoundation {
                     tableName = (string)stringsTable.ValueForKey(KNStringTableRepresentedClassKey);
                 }
 
-                if (stringsTable.Count > 0 && !stringsCache.ContainsKey(resourcesFileName)) {
+                if (stringsCache.ContainsKey(tableName) && stringsTable.Count > 0) {
+                    // Replace existing if we have new strings
+                    stringsCache.Remove(tableName);
+                }
+
+                if (stringsTable.Count > 0) {
                     stringsCache.Add(tableName, stringsTable);
                 }
             }
@@ -386,7 +391,7 @@ namespace KNFoundation {
                     }
                 }
 
-            } catch (Exception ex) { System.Windows.MessageBox.Show(ex.Message); } 
+            } catch { } 
             
 
             return stringsTable;
