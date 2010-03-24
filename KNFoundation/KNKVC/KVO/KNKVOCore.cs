@@ -62,10 +62,15 @@ namespace KNFoundation.KNKVC {
 
         public void ObjectDidChangeValueForKey(Object obj, String key) {
 
-            foreach (KNKVOObservationInfo info in observations) {
+            ArrayList observationsAtBeginningOfOperation = new ArrayList(observations);
 
-                if ((info.ObservedObject == obj) && info.KeyPath == key) {
-                    info.ValueDidChange();
+            foreach (KNKVOObservationInfo info in observationsAtBeginningOfOperation) {
+                // Check that the observation hasn't been removed during some other 
+                // observation invocation.
+                if (observations.Contains(info)) {
+                    if ((info.ObservedObject == obj) && info.KeyPath == key) {
+                        info.ValueDidChange();
+                    }
                 }
             }
         }
