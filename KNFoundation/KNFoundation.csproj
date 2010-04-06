@@ -76,7 +76,10 @@
     <Compile Include="KNBundle.cs" />
     <Compile Include="KNKVC\KVC\KNDependencyObjectKVC.cs" />
     <Compile Include="KNKVC\KVC\KNDictionaryKVC.cs" />
+    <Compile Include="KNKVC\KVC\KNArrayKVC.cs" />
     <Compile Include="KNKVC\KVC\KNKVCMethodInvokeFailedException.cs" />
+    <Compile Include="KNKVC\KVO\KNKVOKeyPathObserver.cs" />
+    <Compile Include="KNKVC\KVO\KNKVOObservationChangeTracker.cs" />
     <Compile Include="KNKVC\KVO\KNKVOObservationInfo.cs" />
     <Compile Include="KNKVC\KVO\KNKVOObserver.cs" />
     <Compile Include="KNKVC\KVO\KNKVOConstants.cs" />

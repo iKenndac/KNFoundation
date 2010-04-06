@@ -17,7 +17,14 @@ namespace KNFoundation.KNKVC {
         – mutableSetValueForKeyPath:  
         */
 
-        // Equivalent to -ValueForKeyPath:. Navigates the key path and calls SetValueForKey on the final found object.
+        /// <summary>
+        /// Attempts to get a value from the given key path of an object by 
+        /// recursively calling <c>ValueForKey</c> until the end of the path or null
+        /// is encountered. See <c>ValueForKey</c> for more information. Equivalent to Cocoa's <c>-valueForKeyPath:</c>.
+        /// </summary>
+        /// <param name="o">The base object.</param>
+        /// <param name="keyPath">The key path to retrieve, in the form <c>key.key.property</c>.</param>
+        /// <returns>The value at the end of the path, or null.</returns>
         public static Object ValueForKeyPath(this Object o, String keyPath) {
             // This is a recursive method. Hooray!
 
@@ -32,7 +39,16 @@ namespace KNFoundation.KNKVC {
         }
 
 
-        // Equivalent to –ValueForKey:  
+        /// <summary>
+        /// Attempts to get a Key-Value Coding compliant value from the given object using the given key. 
+        /// A Key-Value Coding compliant value is either a gettable property named identically to the key
+        /// or a method named identically to the key (i.e., NOT <c>getKey()</c>) that returns a value.
+        /// If the key doesn't exist, attempts to return <c>ValueForUndefinedKey()</c> on the object, which
+        /// by default throws an exception. Equivalent to <c>-valueForKey:</c> in Cocoa.
+        /// </summary>
+        /// <param name="o">The base object.</param>
+        /// <param name="key">The key to get.</param>
+        /// <returns>The value for the specified key.</returns>  
         public static Object ValueForKey(this Object o, String key) {
             // First, try to get the getter for a property.
             // Then, try "key" method. 
@@ -93,8 +109,14 @@ namespace KNFoundation.KNKVC {
 
         }
 
-        // Equivalent to -dictionaryWithValuesForKeys:
-
+        /// <summary>
+        /// Returns a dictionary of the values for the array of keys given. Calls <c>ValueForKey</c> for each
+        /// key given. Equivalent to Cocoa's <c>-dictionaryWithValuesForKeys:</c>.
+        /// </summary>
+        /// <param name="o">The base object.</param>
+        /// <param name="keys">An array of keys (NOT key paths) to retrieve.</param>
+        /// <returns>A <c>Dictionary(String, Object)</c> containing the values for the given keys.</returns>
+        
         public static Dictionary<String, Object> DictionaryWithValuesForKeys(this Object o, String[] keys) {
             Dictionary<String, Object> values = new Dictionary<String, Object>();
 
@@ -105,7 +127,15 @@ namespace KNFoundation.KNKVC {
             return values;
         }
 
-        // Equivalent to valueForUndefinedKey:
+        /// <summary>
+        /// Called when <c>ValueForKey()</c> can't find a Key-Value Coding compliant method for the given 
+        /// key. If you wish to define custom behaviour for your object's KVC compliance, it's recommended that 
+        /// you override this method. The default implementation throws an exception. Equivalent to Cocoa's 
+        /// <c>valueForUndefinedKey:</c>.
+        /// </summary>
+        /// <param name="o">The base object.</param>
+        /// <param name="key">The key that couldn't be found.</param>
+        /// <returns></returns>
         public static Object ValueForUndefinedKey(this Object o, String key) {
             Exception noKeyExeption = new Exception("Class " + o.GetType().Name + " is not Key-Value Coding compliant for key \"" + key + "\".");
             throw noKeyExeption;

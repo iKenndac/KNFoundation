@@ -27,7 +27,16 @@ namespace KNFoundation.KNKVC {
             }
         }
 
-        // Equivalent to –SetValue:forKey:. 
+        /// <summary>
+        /// Attempts to set a Key-Value Coding compliant value on the given object using the given key. 
+        /// A Key-Value Coding compliant value is either a settable property named identically to the key
+        /// or a method named <c>SetKey()</c>) that takes a single value.
+        /// If the key doesn't exist, attempts to set <c>SetValueForUndefinedKey()</c> on the object, which
+        /// by default throws an exception. Equivalent to <c>-setValue:forKey:</c> in Cocoa.
+        /// </summary>
+        /// <param name="o">The base object.</param>
+        /// <param name="value">The value to set.</param>
+        /// <param name="key">The key to set.</param>
         public static void SetValueForKey(this Object o, Object value, String key) {
             // First, try to get the setter for a property.
             // Then, try "set<KeyPath>" method. 
@@ -83,12 +92,21 @@ namespace KNFoundation.KNKVC {
             o.SetValueForUndefinedKey(value, key);
         }
 
-        // Equivalent to –setNilValueForKey:. Simply calls SetValueForKeyPath with a null value.
+        /// <summary>
+        /// Sets a value of the given key to null. Equivalent to Cocoa's <c>–setNilValueForKey:</c>.
+        /// </summary>
+        /// <param name="o">The base object.</param>
+        /// <param name="key">The key to set to null.</param>
         public static void SetNullValueForKey(this Object o, String key) {
             o.SetValueForKeyPath(null, key);
         }
 
-        // Equivalent to –SetValuesForKeysWithDictionary:. Loops through the given dictionary and calls SetValueForKeyPath with each.
+        /// <summary>
+        /// Sets a dictionary of keys at once. Calls <c>SetValueForKey()</c> for each 
+        /// key in the Dictionary. Equivalent to Cocoa's <c>–setValuesForKeysWithDictionary:</c>.
+        /// </summary>
+        /// <param name="o">The base object.</param>
+        /// <param name="keysAndValues">A Dictionary of keys (NOT key paths) and values to set.</param>
         public static void SetValuesForKeysWithDictionary(this Object o, Dictionary<String, Object> keysAndValues) {
             foreach (String key in keysAndValues.Keys) {
 
@@ -103,7 +121,15 @@ namespace KNFoundation.KNKVC {
 
         }
 
-        // Equivalent to –SetValue:forUndefinedKey:. Override to customise. 
+        /// <summary>
+        /// Called when <c>SetValueForKey()</c> can't find a Key-Value coding compliant setter for the given
+        /// key. If you wish to define custom behaviour for your object's KVC compliance, it's recommended that
+        /// you override this method. The default implementation throws an exception. Equivalent to Cocoa's
+        /// <c>–setValue:forUndefinedKey:</c>.
+        /// </summary>
+        /// <param name="o">The base object.</param>
+        /// <param name="value">The value that should be set.</param>
+        /// <param name="key">The key the value should be set for.</param>
         public static void SetValueForUndefinedKey(this Object o, Object value, String key) {
             Exception ex = new Exception("Class " + o.GetType().Name + " is not Key-Value Coding compliant for key \"" + key + "\".");
             throw ex;

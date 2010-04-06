@@ -85,7 +85,7 @@ namespace KNFoundation_WPF_Test {
         #endregion
 
         private void button1_Click(object sender, RoutedEventArgs e) {
-            myObj().AddObserverToKeyPathWithOptions(this, "key", KNKVOConstants.KNKeyValueObservingOptionNew | KNKVOConstants.KNKeyValueObservingOptionOld, null);
+            myObj().AddObserverToKeyPathWithOptions(this, "key", KNKeyValueObservingOptions.KNKeyValueObservingOptionNew | KNKeyValueObservingOptions.KNKeyValueObservingOptionOld, null);
         }
 
         private void button3_Click(object sender, RoutedEventArgs e) {

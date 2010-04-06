@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 namespace KNFoundation.KNKVC {
 
     class KNKVOCore {
-        // Constants, etc
-
         private static KNKVOCore core;
 
-        private ArrayList observations;
+        private ArrayList internalObservations;
+        private ArrayList keyPathObservations;
 
         public static KNKVOCore SharedCore() {
 
@@ -22,28 +22,69 @@ namespace KNFoundation.KNKVC {
         }
 
         private KNKVOCore() {
-            observations = new ArrayList();
-
+            internalObservations = new ArrayList();
+            keyPathObservations = new ArrayList();
         }
 
         // ---------------------
 
-        public void AddObserverToKeyPathOfObject(Object observedObj, String keyPath, KNKVOObserver observer, long options, Object context) {
-            KNKVOObservationInfo info = new KNKVOObservationInfo(keyPath, options, observer, observedObj, context);
-            observations.Add(info);
+        /// <summary>
+        /// Creates an observation manager for the given key path. 
+        /// </summary>
+        /// <param name="observedObj">The object to observe.</param>
+        /// <param name="keyPath">The key path to observe.</param>
+        /// <param name="observer">The observer.</param>
+        /// <param name="options">Bitwise-Or of the desired observation objects.</param>
+        /// <param name="context">The context of the observation. Used for comparison only.</param>
+        public void AddObserverToKeyPathOfObject(Object observedObj, String keyPath, KNKVOObserver observer, KNKeyValueObservingOptions options, Object context) {
+            if (keyPath.Contains('.')) {
+
+                KNKVOKeyPathObserver observerProxy = new KNKVOKeyPathObserver(observedObj, keyPath, observer, options, context);
+                keyPathObservations.Add(observerProxy);
+
+            } else {
+
+                KNKVOObservationInfo info = new KNKVOObservationInfo(keyPath, options, observer, observedObj, context);
+                internalObservations.Add(info);
+            }
         }
 
+        /// <summary>
+        /// Removes an observer from the given key path of an object.
+        /// </summary>
+        /// <param name="observedObj">The observed object.</param>
+        /// <param name="keyPath">The key path to remove the observed from.</param>
+        /// <param name="observer">The observer to remove.</param>
         public void RemoveObserverFromKeyPathOfObject(Object observedObj, String keyPath, KNKVOObserver observer) {
-            ArrayList infoToRemove = new ArrayList();
 
-            foreach (KNKVOObservationInfo info in observations) {
-                if (info.KeyPath.Equals(keyPath) && (info.ObservedObject == observedObj) && (info.Observer == observer)) {
-                    infoToRemove.Add(info);
+            if (keyPath.Contains('.')) {
+                ArrayList proxiesToRemove = new ArrayList();
+
+                foreach (KNKVOKeyPathObserver observerProxy in keyPathObservations) {
+                    if ((observerProxy.observedObject == observedObj) && (observerProxy.keyPath == keyPath) && (observerProxy.observer == observer)) {
+                        proxiesToRemove.Add(observerProxy);
+                    }
                 }
-            }
 
-            foreach (KNKVOObservationInfo info in infoToRemove) {
-                observations.Remove(info);
+                foreach (KNKVOKeyPathObserver observerProxy in proxiesToRemove) {
+                    keyPathObservations.Remove(observerProxy);
+                    observerProxy.Dispose();
+                }
+            } else {
+
+                ArrayList infoToRemove = new ArrayList();
+
+                foreach (KNKVOObservationInfo info in internalObservations) {
+                    if (info.key.Equals(keyPath) && (info.observedObject == observedObj) && (info.observer == observer)) {
+                        infoToRemove.Add(info);
+                    }
+                }
+
+                foreach (KNKVOObservationInfo info in infoToRemove) {
+                    info.Dispose();
+                    internalObservations.Remove(info);
+                }
+
             }
 
         }
@@ -52,30 +93,27 @@ namespace KNFoundation.KNKVC {
 
         public void ObjectWillChangeValueForKey(Object obj, String key) {
 
-            foreach (KNKVOObservationInfo info in observations) {
+            ArrayList currentInternalObservations = new ArrayList(internalObservations);
 
-                if ((info.ObservedObject == obj) && info.KeyPath == key) {
-                    info.ValueWillChange();
+            foreach (KNKVOObservationInfo info in currentInternalObservations) {
+
+                if ((info.observedObject == obj) && info.key == key) {
+                    info.valueWillChange();
                 }
             }
         }
 
         public void ObjectDidChangeValueForKey(Object obj, String key) {
+            ArrayList currentInternalObservations = new ArrayList(internalObservations);
 
-            ArrayList observationsAtBeginningOfOperation = new ArrayList(observations);
+            foreach (KNKVOObservationInfo info in currentInternalObservations) {
 
-            foreach (KNKVOObservationInfo info in observationsAtBeginningOfOperation) {
-                // Check that the observation hasn't been removed during some other 
-                // observation invocation.
-                if (observations.Contains(info)) {
-                    if ((info.ObservedObject == obj) && info.KeyPath == key) {
-                        info.ValueDidChange();
-                    }
+                if ((info.observedObject == obj) && info.key == key) {
+                    info.valueDidChange();
                 }
             }
         }
-
-
     }
+
 }
 

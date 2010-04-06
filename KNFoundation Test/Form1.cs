@@ -65,7 +65,7 @@ namespace KNKVC_Test
 
         private void button1_Click(object sender, EventArgs e)
         {
-            myObj().AddObserverToKeyPathWithOptions(this, "key", KNKVOConstants.KNKeyValueObservingOptionNew | KNKVOConstants.KNKeyValueObservingOptionOld, null);
+            myObj().AddObserverToKeyPathWithOptions(this, "key", KNKeyValueObservingOptions.KNKeyValueObservingOptionNew | KNKeyValueObservingOptions.KNKeyValueObservingOptionOld, null);
         }
 
         public void ObserveValueForKeyPathOfObject(String keyPath, Object obj, Dictionary<String, Object> change, Object context)
