@@ -53,7 +53,7 @@ namespace KNFoundation.KNKVC {
         }
 
         public void ObserveValueForKeyPathOfObject(String aKeyPath, Object anObj, Dictionary<String, Object> change, Object aContext) {
-            if (change.ValueForKey(KNKVOConstants.KNKeyValueChangeNotificationIsPriorKey) != null) {
+            if (change != null && change.ValueForKey(KNKVOConstants.KNKeyValueChangeNotificationIsPriorKey) != null) {
 
                 Object oldValue = observedObject.ValueForKeyPath(keyPath);
                 KNKVOObservationChangeTracker tracker = new KNKVOObservationChangeTracker(oldValue, aKeyPath);
