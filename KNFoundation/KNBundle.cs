@@ -474,12 +474,12 @@ namespace KNFoundation {
 
                 if (!String.IsNullOrEmpty(ExecutablePath) && File.Exists(ExecutablePath)) {
 
-                    return BitmapSourceFromBitmap(Icon.ExtractAssociatedIcon(ExecutablePath).ToBitmap());
+                    return Icon.ExtractAssociatedIcon(ExecutablePath).ToBitmap().ToBitmapSource();
                 }
 
                 if (!String.IsNullOrEmpty(BundlePath) && Directory.Exists(BundlePath)) {
 
-                    return BitmapSourceFromBitmap(Icon.ExtractAssociatedIcon(BundlePath).ToBitmap());
+                    return Icon.ExtractAssociatedIcon(BundlePath).ToBitmap().ToBitmapSource();
                     
                 }
 
@@ -506,7 +506,7 @@ namespace KNFoundation {
                         Bitmap icon = ExtractVistaIcon(icoAppIcon);
 
                         if (icon != null) {
-                            return BitmapSourceFromBitmap(icon);
+                            return icon.ToBitmapSource();
                         }
                     } catch { }
                 }
@@ -545,20 +545,6 @@ namespace KNFoundation {
             return bmpPngExtracted;
         }
 
-        private BitmapSource BitmapSourceFromBitmap(Bitmap icon) {
-            
-            IntPtr hBitmap = icon.GetHbitmap();
-
-            BitmapSource bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
-                hBitmap,
-                IntPtr.Zero,
-                Int32Rect.Empty,
-                System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-
-            return bitmapSource;
-        }
-
-  
         public string Name {
             get {
                 if (InfoDictionary.ContainsKey(KNBundleNameKey)) {
