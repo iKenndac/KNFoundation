@@ -21,7 +21,7 @@ namespace KNFoundation.KNKVC {
 
             // Check for coupled keys 
 
-            String keyPathsMethodName = "keyPathsForValuesAffecting" + key.Substring(0, 1).ToUpper() + key.Substring(1);
+            String keyPathsMethodName = "KeyPathsForValuesAffecting" + key.Substring(0, 1).ToUpper() + key.Substring(1);
 
             MethodInfo keyPathsMethod = observedObject.GetType().GetMethod(keyPathsMethodName, BindingFlags.Static | BindingFlags.Public);
             try {
@@ -113,7 +113,7 @@ namespace KNFoundation.KNKVC {
             }
 
             if ((options & KNKeyValueObservingOptions.KNKeyValueObservingOptionOld) == KNKeyValueObservingOptions.KNKeyValueObservingOptionOld) {
-                if (newValue != null) {
+                if (oldValue != null) {
                     change.SetValueForKey(oldValue, KNKVOConstants.KNKeyValueChangeOldKey);
                 }
             }
