@@ -34,7 +34,11 @@ namespace KNFoundation.KNKVC {
                 return o.ValueForKey(paths[0]);
             } else {
                 Object nextObject = o.ValueForKey(paths[0]);
-                return nextObject.ValueForKeyPath(String.Join(".", paths, 1, paths.Length - 1));
+                if (nextObject != null) {
+                    return nextObject.ValueForKeyPath(String.Join(".", paths, 1, paths.Length - 1));
+                } else {
+                    return null;
+                }
             }
         }
 
