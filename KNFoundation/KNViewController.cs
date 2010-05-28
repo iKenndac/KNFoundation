@@ -15,7 +15,8 @@ namespace KNFoundation {
 
         private UserControl view;
         private Object representedObject;
-
+        private KNViewController parentViewController;
+        private KNWindowController windowController;
 
         public KNViewController(string viewXamlName) {
 
@@ -52,8 +53,6 @@ namespace KNFoundation {
             View = (UserControl)view;
             MatchPropertiesToViewTree(view);
             KNBundleGlobalHelpers.AttemptToLocalizeComponent(View);
-
-
         }
 
         private void MatchPropertiesToViewTree(DependencyObject obj) {
@@ -92,8 +91,34 @@ namespace KNFoundation {
                 representedObject = value;
                 this.DidChangeValueForKey("RepresentedObject");
             }
-
         }
+
+        public KNViewController ParentViewController {
+            get { return parentViewController; }
+            set {
+                this.WillChangeValueForKey("ParentViewController");
+                parentViewController = value;
+                this.DidChangeValueForKey("ParentViewController");
+            }
+        }
+
+        public KNWindowController WindowController {
+            get {
+                if (windowController != null) {
+                    return windowController;
+                } else if (ParentViewController != null) {
+                    return ParentViewController.WindowController;
+                } else {
+                    return null;
+                }
+            }
+            set {
+                this.WillChangeValueForKey("WindowController");
+                windowController = value;
+                this.DidChangeValueForKey("WindowController");
+            }
+        }
+    
 
         #endregion
 

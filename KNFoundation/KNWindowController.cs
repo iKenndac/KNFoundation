@@ -75,7 +75,12 @@ namespace KNFoundation {
             set {
                 this.WillChangeValueForKey("ViewController");
                 rootViewController = value;
-                Window.Content = value.View;
+                if (rootViewController != null) {
+                    rootViewController.WindowController = this;
+                    Window.Content = rootViewController.View;
+                } else {
+                    Window.Content = null;
+                }                
                 this.DidChangeValueForKey("ViewController");
             }
         }
