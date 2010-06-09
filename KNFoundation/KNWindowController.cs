@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.IO;
-using System.Windows.Markup;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using System.Windows.Media;
+using System.Xaml;
+using System.Reflection;
+using System.Activities.XamlIntegration;
 
 using KNFoundation.KNKVC;
 
@@ -27,7 +29,15 @@ namespace KNFoundation {
                 if (xamlPath != null) {
 
                     FileStream s = new FileStream(xamlPath, FileMode.Open);
-                    Object rootElement = (Object)XamlReader.Load(s);
+                    
+                    XamlXmlReaderSettings settings = new XamlXmlReaderSettings();
+                    settings.LocalAssembly = Assembly.GetCallingAssembly();
+                    settings.CloseInput = true;
+                    
+                    XamlXmlReader reader = new XamlXmlReader(s, settings);
+
+                    DependencyObject rootElement = (DependencyObject)XamlServices.Load(reader);
+
                     Window newWindow = (Window)rootElement;
                     newWindow.SourceInitialized += WindowWasInitialized;
                     Window = newWindow;

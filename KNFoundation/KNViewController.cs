@@ -8,6 +8,7 @@ using System.Windows.Markup;
 using System.IO;
 using System.Reflection;
 using KNFoundation.KNKVC;
+using System.Xaml;
 
 namespace KNFoundation {
 
@@ -25,7 +26,15 @@ namespace KNFoundation {
                 if (xamlPath != null) {
 
                     FileStream s = new FileStream(xamlPath, FileMode.Open);
-                    DependencyObject rootElement = (DependencyObject)XamlReader.Load(s);
+
+                    XamlXmlReaderSettings settings = new XamlXmlReaderSettings();
+                    settings.LocalAssembly = Assembly.GetCallingAssembly();
+                    settings.CloseInput = true;
+
+                    XamlXmlReader reader = new XamlXmlReader(s, settings);
+
+                    DependencyObject rootElement = (DependencyObject)XamlServices.Load(reader);
+
                     UserControl newView = (UserControl)rootElement;
                     View = newView;
 
