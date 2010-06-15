@@ -251,7 +251,7 @@ namespace KNFoundation {
                 }
             }
 
-            return value;
+            return (value == null ? key : value); ;
         }
 
         public Dictionary<string, string> LocalizedStringTableWithName(string table) {
