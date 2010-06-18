@@ -64,6 +64,9 @@ namespace KNFoundation {
             KNBundleGlobalHelpers.AttemptToLocalizeComponent(View);
         }
 
+        public KNViewController() {
+        }
+
         private void MatchPropertiesToViewTree(DependencyObject obj) {
 
             Type myType = GetType();
