@@ -121,7 +121,12 @@ namespace KNFoundation {
 
         public static KNBundle MainBundle() {
 
-            FileInfo appInfo = new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location);
+            Assembly entryAssembly = Assembly.GetEntryAssembly();
+            if (entryAssembly == null) {
+                entryAssembly = Assembly.GetCallingAssembly();
+            }
+
+            FileInfo appInfo = new FileInfo(entryAssembly.Location);
             return KNBundle.BundleWithDirectoryPath(appInfo.DirectoryName);
         }
 
@@ -216,22 +221,28 @@ namespace KNFoundation {
                 }
             }
 
-            foreach (string resourcesFileName in assembly.GetManifestResourceNames()) {
+            if (assembly != null) {
+                string[] resourceNames = assembly.GetManifestResourceNames();
 
-                string tableName = resourcesFileName.Replace(".resources", "");
-                Dictionary<string, string> stringsTable = ExtractStringsFromResourcesFile(resourcesFileName, assembly);
+                if (resourceNames != null) {
+                    foreach (string resourcesFileName in resourceNames) {
 
-                if (stringsTable.ContainsKey(KNStringTableRepresentedClassKey)) {
-                    tableName = (string)stringsTable.ValueForKey(KNStringTableRepresentedClassKey);
-                }
+                        string tableName = resourcesFileName.Replace(".resources", "");
+                        Dictionary<string, string> stringsTable = ExtractStringsFromResourcesFile(resourcesFileName, assembly);
 
-                if (stringsCache.ContainsKey(tableName) && stringsTable.Count > 0) {
-                    // Replace existing if we have new strings
-                    stringsCache.Remove(tableName);
-                }
+                        if (stringsTable.ContainsKey(KNStringTableRepresentedClassKey)) {
+                            tableName = (string)stringsTable.ValueForKey(KNStringTableRepresentedClassKey);
+                        }
 
-                if (stringsTable.Count > 0) {
-                    stringsCache.Add(tableName, stringsTable);
+                        if (stringsCache.ContainsKey(tableName) && stringsTable.Count > 0) {
+                            // Replace existing if we have new strings
+                            stringsCache.Remove(tableName);
+                        }
+
+                        if (stringsTable.Count > 0) {
+                            stringsCache.Add(tableName, stringsTable);
+                        }
+                    }
                 }
             }
         }
