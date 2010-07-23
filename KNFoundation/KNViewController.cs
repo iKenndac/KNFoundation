@@ -37,6 +37,7 @@ namespace KNFoundation {
 
                     UserControl newView = (UserControl)rootElement;
                     View = newView;
+                    View.Initialized += ViewInitialized;
 
                     // Find our properties, then search for controls with the same name
 
@@ -65,6 +66,14 @@ namespace KNFoundation {
         }
 
         public KNViewController() {
+        }
+
+        private void ViewInitialized(object sender, EventArgs e) {
+            ViewDidLoad();
+        }
+
+        protected virtual void ViewDidLoad() {
+        
         }
 
         private void MatchPropertiesToViewTree(DependencyObject obj) {
