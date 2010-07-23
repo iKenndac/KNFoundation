@@ -77,13 +77,16 @@ namespace KNFoundation.KNKVC {
 
             try {
                 PropertyInfo property = o.GetType().GetProperty(key);
-                MethodInfo getPropertyMethod = property.GetGetMethod(true);
 
-                try {
-                    return getPropertyMethod.Invoke(o, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null, null, null);
-                } catch (Exception e) {
-                    // Calling the found method failed. 
-                    throw new KNKVCMethodInvokeFailedException(e);
+                if (property != null) {
+                    MethodInfo getPropertyMethod = property.GetGetMethod(true);
+
+                    try {
+                        return getPropertyMethod.Invoke(o, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null, null, null);
+                    } catch (Exception e) {
+                        // Calling the found method failed. 
+                        throw new KNKVCMethodInvokeFailedException(e);
+                    }
                 }
             } catch (KNKVCMethodInvokeFailedException ex) {
                 // Rethrow
@@ -91,6 +94,7 @@ namespace KNFoundation.KNKVC {
             } catch {
                 // Property method not found. We can continue
             }
+        
 
             try {
 

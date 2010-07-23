@@ -10,6 +10,8 @@ namespace KNFoundation.KNKVC {
         private Stack<KNKVOObservationChangeTracker> changes;
         ArrayList previousObservations = new ArrayList();
 
+        private const string kKNKVOKeyPathObserverInternalObservationContext = "kKNKVOKeyPathObserverInternalObservationContext";
+
         public KNKVOKeyPathObserver(Object aBaseObject, String aKeyPath, KNKVOObserver anObserver, KNKeyValueObservingOptions someOptions, Object aContext) {
             changes = new Stack<KNKVOObservationChangeTracker>();
             previousObservations = new ArrayList();
@@ -19,7 +21,9 @@ namespace KNFoundation.KNKVC {
             options = someOptions;
             observer = anObserver;
 
-            this.ObserveValueForKeyPathOfObject(aKeyPath, observedObject, null, context);
+            //this.ObserveValueForKeyPathOfObject(aKeyPath, observedObject, null, context);
+
+            ResetObservationTree();
 
             if ((options & KNKeyValueObservingOptions.KNKeyValueObservingOptionInitial) == KNKeyValueObservingOptions.KNKeyValueObservingOptionInitial) {
                 Dictionary<String, Object> change = new Dictionary<String, Object>();
@@ -52,6 +56,29 @@ namespace KNFoundation.KNKVC {
 
         }
 
+        private void ResetObservationTree() {
+        
+            foreach (KeyValuePair<Object, String> oldObservation in previousObservations) {
+                oldObservation.Key.RemoveObserverFromKeyPath(this, oldObservation.Value);
+            }
+            previousObservations.Clear();
+
+            // Add it, and send the notification down
+            Object currentObj = observedObject;
+            ArrayList keys = new ArrayList(keyPath.Split('.'));
+
+            foreach (String key in keys) {
+                currentObj.AddObserverToKeyPathWithOptions(
+                    this,
+                    key,
+                    KNKeyValueObservingOptions.KNKeyValueObservingOptionPrior | KNKeyValueObservingOptions.KNKeyValueObservingOptionOld | KNKeyValueObservingOptions.KNKeyValueObservingOptionNew,
+                    kKNKVOKeyPathObserverInternalObservationContext);
+                currentObj = currentObj.ValueForKey(key);
+                if (currentObj == null) { break; }
+            }
+
+        }
+        
         public void ObserveValueForKeyPathOfObject(String aKeyPath, Object anObj, Dictionary<String, Object> change, Object aContext) {
             if (change != null && change.ValueForKey(KNKVOConstants.KNKeyValueChangeNotificationIsPriorKey) != null) {
 
@@ -74,26 +101,12 @@ namespace KNFoundation.KNKVC {
                     Dictionary<String, Object> changeDict = new Dictionary<String, Object>();
                     changeDict.SetValueForKey(true, KNKVOConstants.KNKeyValueChangeNotificationIsPriorKey);
                     changeDict.SetValueForKey(oldValue, KNKVOConstants.KNKeyValueChangeOldKey);
+
+                    observer.ObserveValueForKeyPathOfObject(keyPath, observedObject, changeDict, context);
                 }
             } else {
-                foreach (KeyValuePair<Object, String> oldObservation in previousObservations) {
-                    oldObservation.Key.RemoveObserverFromKeyPath(this, oldObservation.Value);
-                }
-                previousObservations.Clear();
 
-                // Add it, and send the notification down
-                Object currentObj = observedObject;
-                ArrayList keys = new ArrayList(keyPath.Split('.'));
-
-                foreach (String key in keys) {
-                    currentObj.AddObserverToKeyPathWithOptions(
-                        this,
-                        key,
-                        KNKeyValueObservingOptions.KNKeyValueObservingOptionPrior | KNKeyValueObservingOptions.KNKeyValueObservingOptionOld | KNKeyValueObservingOptions.KNKeyValueObservingOptionNew,
-                        aContext);
-                    currentObj = currentObj.ValueForKey(key);
-                    if (currentObj == null) { break; }
-                }
+                ResetObservationTree();
 
                 Dictionary<String, Object> changeDict = new Dictionary<String, Object>();
 
@@ -106,6 +119,7 @@ namespace KNFoundation.KNKVC {
 
                 changeDict.SetValueForKey(observedObject.ValueForKeyPath(keyPath), KNKVOConstants.KNKeyValueChangeNewKey);
                 observer.ObserveValueForKeyPathOfObject(keyPath, observedObject, changeDict, context);
+              
             }
 
         }

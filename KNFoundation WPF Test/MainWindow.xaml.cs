@@ -78,6 +78,11 @@ namespace KNFoundation_WPF_Test {
             if (change.ValueForKey(KNKVOConstants.KNKeyValueChangeOldKey) != null) {
                 message += "Old: " + change.ValueForKey(KNKVOConstants.KNKeyValueChangeOldKey).ToString() + Environment.NewLine;
             }
+            if (change.ValueForKey(KNKVOConstants.KNKeyValueChangeNotificationIsPriorKey) != null) {
+
+                message += "Prior: " + change.ValueForKey(KNKVOConstants.KNKeyValueChangeNotificationIsPriorKey).ToString() + Environment.NewLine;
+
+            }
 
             MessageBox.Show(message);
         }
@@ -85,11 +90,12 @@ namespace KNFoundation_WPF_Test {
         #endregion
 
         private void button1_Click(object sender, RoutedEventArgs e) {
-            myObj().AddObserverToKeyPathWithOptions(this, "key", KNKeyValueObservingOptions.KNKeyValueObservingOptionNew | KNKeyValueObservingOptions.KNKeyValueObservingOptionOld, null);
+
+            this.AddObserverToKeyPathWithOptions(this, "myObj.key", KNKeyValueObservingOptions.KNKeyValueObservingOptionPrior | KNKeyValueObservingOptions.KNKeyValueObservingOptionNew | KNKeyValueObservingOptions.KNKeyValueObservingOptionOld, null);
         }
 
         private void button3_Click(object sender, RoutedEventArgs e) {
-            myObj().RemoveObserverFromKeyPath(this, "key");
+            this.RemoveObserverFromKeyPath(this, "myObj.key");
         }
 
         private void button2_Click(object sender, RoutedEventArgs e) {
