@@ -63,6 +63,7 @@ namespace KNFoundation {
             View = (UserControl)view;
             MatchPropertiesToViewTree(view);
             KNBundleGlobalHelpers.AttemptToLocalizeComponent(View);
+            ViewDidLoad();
         }
 
         public KNViewController() {
@@ -73,7 +74,9 @@ namespace KNFoundation {
         }
 
         protected virtual void ViewDidLoad() {
-        
+        }
+
+        public virtual void ViewWillBeShown() {
         }
 
         private void MatchPropertiesToViewTree(DependencyObject obj) {
