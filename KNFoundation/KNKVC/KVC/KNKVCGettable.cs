@@ -95,13 +95,29 @@ namespace KNFoundation.KNKVC {
                 // Property method not found. We can continue
             }
         
-
             try {
 
                 MethodInfo method = o.GetType().GetMethod(key, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                 try {
                     if (!(method == null)) {
                         return method.Invoke(o, null);
+                    }
+                } catch (Exception e) {
+                    // Calling the found method failed. 
+                    throw new KNKVCMethodInvokeFailedException(e);
+                }
+            } catch (KNKVCMethodInvokeFailedException ex) {
+                throw ex;
+            } catch {
+                // Not found again. We can continue.
+            }
+
+            try {
+
+                FieldInfo fieldInfo = o.GetType().GetField(key, BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+                try {
+                    if (!(fieldInfo == null)) {
+                        return (DependencyProperty)fieldInfo.GetValue(o);
                     }
                 } catch (Exception e) {
                     // Calling the found method failed. 

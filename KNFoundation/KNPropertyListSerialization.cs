@@ -9,8 +9,6 @@ using KNFoundation.KNKVC;
 
 namespace KNFoundation {
 
-    
-
     public class KNPropertyListSerialization {
 
         public static byte[] DataWithPropertyList(Dictionary<string, object> plist) {
@@ -60,7 +58,7 @@ namespace KNFoundation {
                     }
                 }
                 return null;
-            } catch {
+            } catch (Exception e) {
                 return null;
             }
         }

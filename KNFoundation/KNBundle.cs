@@ -425,40 +425,44 @@ namespace KNFoundation {
                     // Ignore \" as that should be included as a quote. 
 
                     //TODO: This should be better!
-                    try {
 
-                        string key, value;
+                    if (line.Trim().Length > 0) {
 
-                        int openingKeyDelimiter = line.IndexOf(quoteDelemiter, 0);
-                        while (line.CharacterAtIndexIsEscapedWithCharacter(openingKeyDelimiter, delemiterEscape)) {
-                            openingKeyDelimiter = line.IndexOf(quoteDelemiter, openingKeyDelimiter + 1);
+                        try {
+
+                            string key, value;
+
+                            int openingKeyDelimiter = line.IndexOf(quoteDelemiter, 0);
+                            while (line.CharacterAtIndexIsEscapedWithCharacter(openingKeyDelimiter, delemiterEscape)) {
+                                openingKeyDelimiter = line.IndexOf(quoteDelemiter, openingKeyDelimiter + 1);
+                            }
+
+                            int closingKeyDelimiter = line.IndexOf(quoteDelemiter, openingKeyDelimiter + 1);
+                            while (line.CharacterAtIndexIsEscapedWithCharacter(closingKeyDelimiter, delemiterEscape)) {
+                                closingKeyDelimiter = line.IndexOf(quoteDelemiter, closingKeyDelimiter + 1);
+                            }
+
+                            key = line.Substring(openingKeyDelimiter + 1, closingKeyDelimiter - openingKeyDelimiter - 1);
+
+                            int openingValueDelimiter = line.IndexOf(quoteDelemiter, closingKeyDelimiter + 1);
+                            while (line.CharacterAtIndexIsEscapedWithCharacter(openingValueDelimiter, delemiterEscape)) {
+                                openingValueDelimiter = line.IndexOf(quoteDelemiter, openingValueDelimiter + 1);
+                            }
+
+                            int closingValueDelimiter = line.IndexOf(quoteDelemiter, openingValueDelimiter + 1);
+                            while (line.CharacterAtIndexIsEscapedWithCharacter(closingValueDelimiter, delemiterEscape)) {
+                                closingValueDelimiter = line.IndexOf(quoteDelemiter, closingValueDelimiter + 1);
+                            }
+
+                            value = line.Substring(openingValueDelimiter + 1, closingValueDelimiter - openingValueDelimiter - 1);
+
+                            if (!String.IsNullOrEmpty(key) && !String.IsNullOrEmpty(value)) {
+                                stringsTable.Add(key.DeEscapedString(), value.DeEscapedString());
+                            }
+
+                        } catch {
+                            // Don't care. Hooray!
                         }
-
-                        int closingKeyDelimiter = line.IndexOf(quoteDelemiter, openingKeyDelimiter + 1);
-                        while (line.CharacterAtIndexIsEscapedWithCharacter(closingKeyDelimiter, delemiterEscape)) {
-                            closingKeyDelimiter = line.IndexOf(quoteDelemiter, closingKeyDelimiter + 1);
-                        }
-
-                        key = line.Substring(openingKeyDelimiter + 1, closingKeyDelimiter - openingKeyDelimiter - 1);
-
-                        int openingValueDelimiter = line.IndexOf(quoteDelemiter, closingKeyDelimiter + 1);
-                        while (line.CharacterAtIndexIsEscapedWithCharacter(openingValueDelimiter, delemiterEscape)) {
-                            openingValueDelimiter = line.IndexOf(quoteDelemiter, openingValueDelimiter + 1);
-                        }
-
-                        int closingValueDelimiter = line.IndexOf(quoteDelemiter, openingValueDelimiter + 1);
-                        while (line.CharacterAtIndexIsEscapedWithCharacter(closingValueDelimiter, delemiterEscape)) {
-                            closingValueDelimiter = line.IndexOf(quoteDelemiter, closingValueDelimiter + 1);
-                        }
-
-                        value = line.Substring(openingValueDelimiter + 1, closingValueDelimiter - openingValueDelimiter - 1);
-
-                        if (!String.IsNullOrEmpty(key) && !String.IsNullOrEmpty(value)) {
-                            stringsTable.Add(key.DeEscapedString(), value.DeEscapedString());
-                        }
-
-                    } catch {
-                        // Don't care. Hooray!
                     }
                 }
 
