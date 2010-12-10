@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace KNFoundation.KNKVC {
 
@@ -27,6 +28,9 @@ namespace KNFoundation.KNKVC {
             }
         }
 
+        public delegate void SetValueForKeyInvoker(Object value, String key);
+        private delegate void SetterInvoker(object value);
+
         /// <summary>
         /// Attempts to set a Key-Value Coding compliant value on the given object using the given key. 
         /// A Key-Value Coding compliant value is either a settable property named identically to the key
@@ -42,6 +46,16 @@ namespace KNFoundation.KNKVC {
             // Then, try "set<KeyPath>" method. 
             // Then, call "SetValueForUndefinedKey".
 
+
+            if (typeof(DispatcherObject).IsAssignableFrom(o.GetType())) {
+
+                DispatcherObject dispatcherObj = (DispatcherObject)o;
+                if (!dispatcherObj.CheckAccess()) {
+                    dispatcherObj.Dispatcher.Invoke(new SetValueForKeyInvoker(o.SetValueForKey), DispatcherPriority.Normal, new object[] { value, key });
+                    return;
+                }
+            }
+
             if (typeof(IDictionary).IsAssignableFrom(o.GetType())) {
                 KNDictionaryKVC.SetValueForKey((IDictionary)o, value, key);
                 return;
@@ -55,7 +69,7 @@ namespace KNFoundation.KNKVC {
             try {
                 PropertyInfo property = o.GetType().GetProperty(key);
                 MethodInfo setPropertyMethod = property.GetSetMethod(true);
-
+                
                 try {
                     setPropertyMethod.Invoke(o, paramArray);
                     return;
