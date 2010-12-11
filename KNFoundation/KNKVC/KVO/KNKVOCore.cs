@@ -4,6 +4,8 @@ using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using System.Windows.Controls;
+using KNFoundation.KNKVC.KVO.Helpers;
 
 namespace KNFoundation.KNKVC {
 
@@ -12,6 +14,8 @@ namespace KNFoundation.KNKVC {
 
         private ArrayList internalObservations;
         private ArrayList keyPathObservations;
+        private Dictionary<Type, KNKVOHelper> helpers;
+        private Dictionary<object, KNKVOHelper> helperCache;
 
         public static KNKVOCore SharedCore() {
 
@@ -24,6 +28,10 @@ namespace KNFoundation.KNKVC {
         private KNKVOCore() {
             internalObservations = new ArrayList();
             keyPathObservations = new ArrayList();
+            helpers = new Dictionary<Type, KNKVOHelper>();
+            helperCache = new Dictionary<object, KNKVOHelper>();
+
+            RegisterHelperForType(new CheckboxKVOHelper(), typeof(CheckBox));
         }
 
         // ---------------------
@@ -87,6 +95,42 @@ namespace KNFoundation.KNKVC {
 
             }
 
+        }
+
+        /// <summary>
+        /// Adds a helper to the KVO system. Helpers "assist" classes with automatic
+        /// KVO notifications.
+        /// </summary>
+        /// <param name="helper">The helper to add.</param>
+        /// <param name="targetType">The type the helper is for.</param>
+        public void RegisterHelperForType(KNKVOHelper helper, Type targetType) {
+            helpers[targetType] = helper;
+        }
+
+        /// <summary>
+        /// Gets an existing helper for an object if one exists, or creates one if not.
+        /// </summary>
+        /// <param name="anObject">The object to get a helper for.</param>
+        /// <returns>A helper.</returns>
+        public KNKVOHelper HelperForObject(object anObject) {
+
+            if (helpers.ContainsKey(anObject.GetType())) {
+                if (!helperCache.ContainsKey(anObject)) {
+                    helperCache[anObject] = helpers[anObject.GetType()].CopyForNewObject(anObject);
+                }
+                KNKVOHelper helper = helperCache[anObject];
+                helper.Retain();
+                return helper;
+            } else {
+                return null;
+            }
+        }
+
+        public void HelperIsNoLongerNeeded(KNKVOHelper helper) {
+            helper.Release();
+            if (helper.RetainCount() <= 0 && helperCache.ContainsValue(helper)) {
+                helperCache.Remove(helper);
+            }
         }
 
         // ---------------------

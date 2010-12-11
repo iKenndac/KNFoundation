@@ -19,6 +19,10 @@ namespace KNFoundation.KNKVC {
             key = aKey;
             context = aContext;
 
+            // Get a helper object if needed 
+
+            helper = KNKVOCore.SharedCore().HelperForObject(anObservedObject);
+
             // Check for coupled keys 
 
             String keyPathsMethodName = "KeyPathsForValuesAffecting" + key.Substring(0, 1).ToUpper() + key.Substring(1);
@@ -57,6 +61,7 @@ namespace KNFoundation.KNKVC {
         public KNKVOObserver observer { get; private set; }
         public KNKeyValueObservingOptions options { get; private set; }
         private WeakReference observedObjectReference { get; set; }
+        private KNKVOHelper helper { get; set; }
 
         public Object observedObject {
             get {
@@ -128,6 +133,10 @@ namespace KNFoundation.KNKVC {
                 foreach (String relatedKey in keyPathsRelatedToObservation) {
                     observedObject.RemoveObserverFromKeyPath(this, relatedKey);
                 }
+            }
+
+            if (helper != null) {
+                KNKVOCore.SharedCore().HelperIsNoLongerNeeded(helper);
             }
         }
 

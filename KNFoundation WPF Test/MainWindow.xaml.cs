@@ -65,6 +65,8 @@ namespace KNFoundation_WPF_Test {
             KNUserDefaults.StandardUserDefaults().Defaults = defaults;
             image1.Source = KNBundle.MainBundle().LargeBundleIcon;
 
+            KNBinding.BindKeyPathOfTargetToKeyPathOfSource("IsChecked", checkBox1, "IsChecked", checkBox2);
+
         }
         
         #region KNKVOObserver Members
