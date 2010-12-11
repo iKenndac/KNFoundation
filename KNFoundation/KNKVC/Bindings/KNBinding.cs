@@ -133,7 +133,9 @@ namespace KNFoundation.KNKVC {
 
                     ignoreTargetKVO = true;
                     // ^ Faster than removing observer and re-adding
-                    Target.SetValueForKeyPath(value, TargetKeyPath);
+                    try {
+                        Target.SetValueForKeyPath(value, TargetKeyPath);
+                    } catch (Exception) { }
                     ignoreTargetKVO = false;
                 }
             } else if (keyPath.Equals(TargetKeyPath) & obj == Target && context == kKNBindingInternalObservationContext) {
@@ -163,7 +165,9 @@ namespace KNFoundation.KNKVC {
 
                     ignoreSourceKVO = true;
                     // ^ Faster than removing observer and re-adding
-                    Source.SetValueForKeyPath(value, SourceKeyPath);
+                    try {
+                        Source.SetValueForKeyPath(value, SourceKeyPath);
+                    } catch (Exception) { }
                     ignoreSourceKVO = false;
                 }
 

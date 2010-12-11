@@ -23,8 +23,9 @@ namespace KNFoundation.KNKVC {
                 o.SetValueForKey(value, paths[0]);
             } else {
                 Object nextObject = o.ValueForKey(paths[0]);
-                nextObject.SetValueForKeyPath(value, String.Join(".", paths, 1, paths.Length - 1));
-
+                if (nextObject != null) {
+                    nextObject.SetValueForKeyPath(value, String.Join(".", paths, 1, paths.Length - 1));
+                }
             }
         }
 
@@ -68,14 +69,16 @@ namespace KNFoundation.KNKVC {
 
             try {
                 PropertyInfo property = o.GetType().GetProperty(key);
-                MethodInfo setPropertyMethod = property.GetSetMethod(true);
-                
-                try {
-                    setPropertyMethod.Invoke(o, paramArray);
-                    return;
-                } catch (Exception e) {
-                    // Calling the found method failed. 
-                    throw new KNKVCMethodInvokeFailedException(e);
+
+                if (property != null) {
+                    MethodInfo setPropertyMethod = property.GetSetMethod(true);
+                    try {
+                        setPropertyMethod.Invoke(o, paramArray);
+                        return;
+                    } catch (Exception e) {
+                        // Calling the found method failed. 
+                        throw new KNKVCMethodInvokeFailedException(e);
+                    }
                 }
             } catch (KNKVCMethodInvokeFailedException ex) {
                 // Rethrow
