@@ -62,6 +62,11 @@ namespace KNFoundation.KNKVC {
                 return;
             }
 
+            if (typeof(KNUserDefaults).IsAssignableFrom(o.GetType())) {
+                ((KNUserDefaults)o).SetValueForKey(value, key);
+                return;
+            }
+
             Object[] paramArray = new Object[1];
             paramArray[0] = value;
 

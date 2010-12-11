@@ -21,5 +21,6 @@
         <Button Content="Localize Me!" Height="23" HorizontalAlignment="Left" Margin="27,276,0,0" Name="button11" VerticalAlignment="Top" Width="117" Click="button11_Click" />
         <CheckBox Content="I am a checkbox!" Height="16" HorizontalAlignment="Left" Margin="314,189,0,0" Name="checkBox1" VerticalAlignment="Top" />
         <CheckBox Content="I am another checkbox!" Height="16" HorizontalAlignment="Left" Margin="314,211,0,0" Name="checkBox2" VerticalAlignment="Top" />
+        <CheckBox Content="UserDefaults" Height="16" HorizontalAlignment="Left" Margin="314,233,0,0" Name="checkBox3" VerticalAlignment="Top" />
     </Grid>
 </Window>

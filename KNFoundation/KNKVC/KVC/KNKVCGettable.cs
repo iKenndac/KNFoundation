@@ -64,6 +64,10 @@ namespace KNFoundation.KNKVC {
                 return KNDictionaryKVC.ValueForKey((IDictionary)o, key);
             }
 
+            if (typeof(KNUserDefaults).IsAssignableFrom(o.GetType())) {
+                return ((KNUserDefaults)o).ValueForKey(key);
+            }
+
             if (typeof(DependencyObject).IsAssignableFrom(o.GetType())) {
                 
                 // Try to search the dependency object for a sub item, then 

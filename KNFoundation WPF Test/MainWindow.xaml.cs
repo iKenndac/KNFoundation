@@ -66,7 +66,7 @@ namespace KNFoundation_WPF_Test {
             image1.Source = KNBundle.MainBundle().LargeBundleIcon;
 
             KNBinding.BindKeyPathOfTargetToKeyPathOfSource("IsChecked", checkBox1, "IsChecked", checkBox2);
-
+            
         }
         
         #region KNKVOObserver Members
@@ -90,6 +90,11 @@ namespace KNFoundation_WPF_Test {
         }
 
         #endregion
+
+        protected override void OnInitialized(EventArgs e) {
+           base.OnInitialized(e);
+           KNBinding.BindKeyPathOfTargetToKeyPathOfSource("IsChecked", checkBox3, "CheckBox3", KNUserDefaults.StandardUserDefaults());
+        }
 
         private void button1_Click(object sender, RoutedEventArgs e) {
 
@@ -137,7 +142,7 @@ namespace KNFoundation_WPF_Test {
         }
 
         private void button10_Click(object sender, RoutedEventArgs e) {
-            MessageBox.Show(KNUserDefaults.StandardUserDefaults().StringForKey("testKey"));
+            MessageBox.Show(KNUserDefaults.StandardUserDefaults().ValueForKey("testKey").ToString());
         }
 
         private void button11_Click(object sender, RoutedEventArgs e) {

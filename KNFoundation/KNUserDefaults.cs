@@ -8,17 +8,6 @@ using System.IO;
 namespace KNFoundation {
 
 
-    static class KNUserDefaultsKVC {
-
-        public static Object ValueForKey(this KNUserDefaults u, String key) {
-            return u.ObjectForKey(key);
-        }
-
-        public static void SetValueForKey(this KNUserDefaults u, Object value, String key) {
-            u.SetObjectForKey(value, key);
-        }
-    }
-
     public class KNUserDefaults {
 
         private static Dictionary<string, KNUserDefaults> defaultsCache = new Dictionary<string, KNUserDefaults>();
@@ -128,6 +117,14 @@ namespace KNFoundation {
             }
         }
 
+        public Object ValueForKey(String key) {
+            return ObjectForKey(key);
+        }
+
+        public void SetValueForKey(Object value, String key) {
+            SetObjectForKey(value, key);
+        }
+
         public string StringForKey(string key) {
             object val = ObjectForKey(key);
             if (val != null) {
@@ -199,6 +196,8 @@ namespace KNFoundation {
                 this.DidChangeValueForKey("Domain");
             }
         }
+
+        
 
     }
 }
