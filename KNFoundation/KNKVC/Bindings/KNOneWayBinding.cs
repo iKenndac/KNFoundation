@@ -4,17 +4,35 @@ using System.Linq;
 using System.Text;
 
 namespace KNFoundation.KNKVC {
+
+    public enum KNValueTransformer {
+        None,
+        KNNegateBoolean,
+        KNIsNull,
+        KNIsNotNull
+    }
+
     public class KNOneWayBinding : KNKVOObserver {
+
+        public static void BindKeyPathOfTargetToKeyPathOfSource(
+            string targetKeyPath,
+            object target,
+            string sourceKeyPath,
+            object source,
+            object nullValuePlaceholder
+            ) {
+                bindings.Add(new KNOneWayBinding(targetKeyPath, target, sourceKeyPath, source, nullValuePlaceholder, KNValueTransformer.None));
+        }
 
         public static void BindKeyPathOfTargetToKeyPathOfSource(
             string targetKeyPath,
             object target,
             string sourceKeyPath, 
             object source, 
-            object nullValuePlaceholder
+            KNValueTransformer transformer
             ) {
 
-                bindings.Add(new KNOneWayBinding(targetKeyPath, target, sourceKeyPath, source, nullValuePlaceholder));
+                bindings.Add(new KNOneWayBinding(targetKeyPath, target, sourceKeyPath, source, null, transformer));
         }
 
         public static void UnbindKeyPathOfTargetFromKeyPathOfSource(
@@ -44,7 +62,8 @@ namespace KNFoundation.KNKVC {
             object target,
             string sourceKeyPath, 
             object source, 
-            object nullValuePlaceholder
+            object nullValuePlaceholder,
+            KNValueTransformer transformer
             ) {
 
                 TargetKeyPath = targetKeyPath;
@@ -52,6 +71,7 @@ namespace KNFoundation.KNKVC {
                 SourceKeyPath = sourceKeyPath;
                 Source = source;
                 NullPlaceHolder = nullValuePlaceholder;
+                ValueTransformer = transformer;
 
                 Source.AddObserverToKeyPathWithOptions(
                     this,
@@ -71,6 +91,23 @@ namespace KNFoundation.KNKVC {
                 if (value == null) {
                     value = NullPlaceHolder;
                 }
+
+                if (ValueTransformer == KNValueTransformer.KNIsNotNull) {
+                    value = (Boolean)(value != null);
+                } else if (ValueTransformer == KNValueTransformer.KNIsNull) {
+                    value = (Boolean)(value == null);
+                } else if (ValueTransformer == KNValueTransformer.KNNegateBoolean) {
+
+                    Boolean aBool;
+                    if (value == null) {
+                        aBool = false;
+                    } else {
+                        aBool = !(Boolean)value;
+                    }
+                    value = aBool;
+                }
+
+
                 Target.SetValueForKeyPath(value, TargetKeyPath);
             } else {
                 throw new Exception("Received unexpected KVO notification");
@@ -82,6 +119,7 @@ namespace KNFoundation.KNKVC {
         private string SourceKeyPath { get; set; }
         private object Source { get; set; }
         private object NullPlaceHolder { get; set; }
+        private KNValueTransformer ValueTransformer { get; set; }
 
     }
 }
