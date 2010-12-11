@@ -95,7 +95,7 @@ namespace KNFoundation.KNKVC {
                 Target.AddObserverToKeyPathWithOptions(
                     this,
                     TargetKeyPath,
-                    KNKeyValueObservingOptions.KNKeyValueObservingOptionInitial,
+                    KNKeyValueObservingOptions.KNKeyValueObservingOptionNone,
                     kKNBindingInternalObservationContext
                     );
         }

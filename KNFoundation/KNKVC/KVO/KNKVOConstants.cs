@@ -9,6 +9,7 @@ namespace KNFoundation.KNKVC {
     /// </summary>
     [Flags]
     public enum KNKeyValueObservingOptions : long {
+        KNKeyValueObservingOptionNone = 0x0,
         /// <summary>
         /// If <c>KNKeyValueObservingOptionNew</c> is specified, the change dictionary will contain the new value
         /// of the observed key path in the key <c>KNKeyValueChangeNewKey</c> This may be <c>null</c>.
