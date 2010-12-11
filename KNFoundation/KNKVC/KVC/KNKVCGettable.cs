@@ -58,14 +58,25 @@ namespace KNFoundation.KNKVC {
             // Then, try "key" method. 
             // Then, raise an exception!
 
-            // Property
+            // Trying to get around:
 
+            /*
+             *  Extension method x() on object.
+             *  Subclass overrides x() as instance method.
+             *  Call x() on subclass cast as object invokes extension method.
+             */
+
+            try {
+                MethodInfo method = o.GetType().GetMethod("ValueForKey", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (method != null && method.GetParameters().Length == 1) {
+                    return method.Invoke(o, new Object[] { key });
+                }
+            } catch {
+                //  We can continue.
+            }
+            
             if (typeof(IDictionary).IsAssignableFrom(o.GetType())) {
                 return KNDictionaryKVC.ValueForKey((IDictionary)o, key);
-            }
-
-            if (typeof(KNUserDefaults).IsAssignableFrom(o.GetType())) {
-                return ((KNUserDefaults)o).ValueForKey(key);
             }
 
             if (typeof(DependencyObject).IsAssignableFrom(o.GetType())) {
@@ -165,6 +176,24 @@ namespace KNFoundation.KNKVC {
         /// <param name="key">The key that couldn't be found.</param>
         /// <returns></returns>
         public static Object ValueForUndefinedKey(this Object o, String key) {
+
+            // Trying to get around:
+
+            /*
+             *  Extension method x() on object.
+             *  Subclass overrides x() as instance method.
+             *  Call x() on subclass cast as object invokes extension method.
+             */
+
+            try {
+                MethodInfo method = o.GetType().GetMethod("ValueForUndefinedKey", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (method != null && method.GetParameters().Length == 1) {
+                    return method.Invoke(o, new Object[] { key });
+                }
+            } catch {
+                //  We can continue.
+            }
+
             Exception noKeyExeption = new Exception("Class " + o.GetType().Name + " is not Key-Value Coding compliant for key \"" + key + "\".");
             throw noKeyExeption;
         }

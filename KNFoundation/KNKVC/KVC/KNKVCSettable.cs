@@ -57,13 +57,26 @@ namespace KNFoundation.KNKVC {
                 }
             }
 
-            if (typeof(IDictionary).IsAssignableFrom(o.GetType())) {
-                KNDictionaryKVC.SetValueForKey((IDictionary)o, value, key);
-                return;
+            // Trying to get around:
+
+            /*
+             *  Extension method x() on object.
+             *  Subclass overrides x() as instance method.
+             *  Call x() on subclass cast as object invokes extension method.
+             */
+
+            try {
+                MethodInfo method = o.GetType().GetMethod("SetValueForKey", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (method != null && method.GetParameters().Length == 2) {
+                    method.Invoke(o, new Object[] { value, key });
+                    return;
+                }
+            } catch {
+                //  We can continue.
             }
 
-            if (typeof(KNUserDefaults).IsAssignableFrom(o.GetType())) {
-                ((KNUserDefaults)o).SetValueForKey(value, key);
+            if (typeof(IDictionary).IsAssignableFrom(o.GetType())) {
+                KNDictionaryKVC.SetValueForKey((IDictionary)o, value, key);
                 return;
             }
 
@@ -153,6 +166,25 @@ namespace KNFoundation.KNKVC {
         /// <param name="value">The value that should be set.</param>
         /// <param name="key">The key the value should be set for.</param>
         public static void SetValueForUndefinedKey(this Object o, Object value, String key) {
+
+            // Trying to get around:
+
+            /*
+             *  Extension method x() on object.
+             *  Subclass overrides x() as instance method.
+             *  Call x() on subclass cast as object invokes extension method.
+             */
+
+            try {
+                MethodInfo method = o.GetType().GetMethod("SetValueForUndefinedKey", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (method != null && method.GetParameters().Length == 2) {
+                    method.Invoke(o, new Object[] { value, key });
+                    return;
+                }
+            } catch {
+                //  We can continue.
+            }
+
             Exception ex = new Exception("Class " + o.GetType().Name + " is not Key-Value Coding compliant for key \"" + key + "\".");
             throw ex;
         }
