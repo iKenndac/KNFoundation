@@ -9,7 +9,9 @@ namespace KNFoundation.KNKVC {
         None,
         KNNegateBoolean,
         KNIsNull,
-        KNIsNotNull
+        KNIsNotNull,
+        KNBooleanToWPFVisibility,
+        KNNegateBooleanToWPFVisibility
     }
 
     public class KNBinding : KNKVOObserver {
@@ -129,6 +131,25 @@ namespace KNFoundation.KNKVC {
                             aBool = !(Boolean)value;
                         }
                         value = aBool;
+                    } else if (ValueTransformer == KNValueTransformer.KNBooleanToWPFVisibility ||
+                        ValueTransformer == KNValueTransformer.KNNegateBooleanToWPFVisibility) {
+
+                        Boolean aBool;
+                        if (value == null) {
+                            aBool = false;
+                        } else {
+                            aBool = (Boolean)value;
+                        }
+
+                        if (ValueTransformer == KNValueTransformer.KNNegateBooleanToWPFVisibility) {
+                            aBool = !aBool;
+                        }
+
+                        if (aBool == true) {
+                            value = System.Windows.Visibility.Visible;
+                        } else {
+                            value = System.Windows.Visibility.Hidden;
+                        }
                     }
 
                     ignoreTargetKVO = true;
@@ -161,7 +182,29 @@ namespace KNFoundation.KNKVC {
                             aBool = !(Boolean)value;
                         }
                         value = aBool;
+
+                    } else if (ValueTransformer == KNValueTransformer.KNBooleanToWPFVisibility ||
+                        ValueTransformer == KNValueTransformer.KNNegateBooleanToWPFVisibility) {
+
+                        // Source -> Target is Bool -> Visibility, so Target -> Source is Visibility -> Bool
+                         
+                        System.Windows.Visibility visibility = (System.Windows.Visibility)value;
+
+                        Boolean aBool;
+                        if (visibility == System.Windows.Visibility.Visible) {
+                            aBool = true;
+                        } else {
+                            aBool = false;
+                        }
+
+                        if (ValueTransformer == KNValueTransformer.KNNegateBooleanToWPFVisibility) {
+                            aBool = !aBool;
+                        }
+
+                        value = aBool;
                     }
+
+
 
                     ignoreSourceKVO = true;
                     // ^ Faster than removing observer and re-adding
@@ -175,6 +218,7 @@ namespace KNFoundation.KNKVC {
                 throw new Exception("Received unexpected KVO notification");
             }
         }
+
 
         private string TargetKeyPath { get; set; }
         private object Target { get; set; }
