@@ -148,7 +148,7 @@ namespace KNFoundation.KNKVC {
                         if (aBool == true) {
                             value = System.Windows.Visibility.Visible;
                         } else {
-                            value = System.Windows.Visibility.Hidden;
+                            value = System.Windows.Visibility.Collapsed;
                         }
                     }
 

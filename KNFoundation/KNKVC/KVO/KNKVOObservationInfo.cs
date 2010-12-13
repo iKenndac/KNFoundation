@@ -21,7 +21,9 @@ namespace KNFoundation.KNKVC {
 
             // Get a helper object if needed 
 
-            helper = KNKVOCore.SharedCore().HelperForObject(anObservedObject);
+            if (anObservedObject != null) {
+                helper = KNKVOCore.SharedCore().HelperForObject(anObservedObject);
+            }
 
             // Check for coupled keys 
 
