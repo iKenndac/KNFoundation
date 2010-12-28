@@ -116,13 +116,28 @@ namespace KNFoundation.KNKVC {
         /// <returns>A helper.</returns>
         public KNKVOHelper HelperForObject(object anObject) {
 
+            KNKVOHelper usableHelper = null;
+
             if (helpers.ContainsKey(anObject.GetType())) {
-                if (!helperCache.ContainsKey(anObject)) {
-                    helperCache[anObject] = helpers[anObject.GetType()].CopyForNewObject(anObject);
+                usableHelper = helpers[anObject.GetType()];
+            } else {
+                // See if we can find an assignable type
+
+                foreach (Type helperType in helpers.Keys) {
+                    if (helperType.IsAssignableFrom(anObject.GetType())) {
+                        usableHelper = helpers[helperType];
+                        break;
+                    }
                 }
-                KNKVOHelper helper = helperCache[anObject];
-                helper.Retain();
-                return helper;
+            }
+
+            if (usableHelper != null) {
+                if (!helperCache.ContainsKey(anObject)) {
+                    helperCache[anObject] = usableHelper.CopyForNewObject(anObject);
+                }
+                KNKVOHelper newHelper = helperCache[anObject];
+                newHelper.Retain();
+                return newHelper;
             } else {
                 return null;
             }

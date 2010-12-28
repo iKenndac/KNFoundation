@@ -66,7 +66,8 @@ namespace KNFoundation_WPF_Test {
             image1.Source = KNBundle.MainBundle().LargeBundleIcon;
 
             KNBinding.BindKeyPathOfTargetToKeyPathOfSource("IsChecked", checkBox1, "IsChecked", checkBox2);
-            
+
+            myObj().key = "Nothing has changed.";
         }
         
         #region KNKVOObserver Members
@@ -106,7 +107,7 @@ namespace KNFoundation_WPF_Test {
         }
 
         private void button2_Click(object sender, RoutedEventArgs e) {
-            myObj().key = "test";
+            myObj().key = "test!!!";
         }
 
         private void button4_Click(object sender, RoutedEventArgs e) {
