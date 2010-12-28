@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Windows.Controls;
+using System.ComponentModel;
 using KNFoundation.KNKVC.KVO.Helpers;
 
 namespace KNFoundation.KNKVC {
@@ -32,6 +33,7 @@ namespace KNFoundation.KNKVC {
             helperCache = new Dictionary<object, KNKVOHelper>();
 
             RegisterHelperForType(new CheckboxKVOHelper(), typeof(CheckBox));
+            RegisterHelperForType(new NotifyPropertyChangedKVOHelper(), typeof(INotifyPropertyChanged));
         }
 
         // ---------------------

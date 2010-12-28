@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using KNFoundation.KNKVC;
+using System.ComponentModel;
 
-    public class TestObject
+    public class TestObject : INotifyPropertyChanged
     {
         private String aKey;
 
@@ -19,4 +20,6 @@ using KNFoundation.KNKVC;
                 this.DidChangeValueForKey("key");
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }

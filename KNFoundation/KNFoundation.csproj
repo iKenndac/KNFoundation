@@ -83,6 +83,7 @@
     <Compile Include="KNKVC\KVC\KNArrayKVC.cs" />
     <Compile Include="KNKVC\KVC\KNKVCMethodInvokeFailedException.cs" />
     <Compile Include="KNKVC\KVO\Helpers\CheckboxKVOHelper.cs" />
+    <Compile Include="KNKVC\KVO\Helpers\NotifyPropertyChangedKVOHelper.cs" />
     <Compile Include="KNKVC\KVO\KNKVOHelper.cs" />
     <Compile Include="KNKVC\KVO\KNKVOKeyPathObserver.cs" />
     <Compile Include="KNKVC\KVO\KNKVOObservationChangeTracker.cs" />
