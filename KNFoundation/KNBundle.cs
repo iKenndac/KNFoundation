@@ -95,6 +95,7 @@ namespace KNFoundation {
 
             if (!string.IsNullOrEmpty(path)) {
                 BitmapImage img = new BitmapImage(new Uri(path));
+                img.Freeze();
                 imageCache.Add(name, img);
                 return img;
             } else {
