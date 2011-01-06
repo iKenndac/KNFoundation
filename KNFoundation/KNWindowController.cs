@@ -28,7 +28,7 @@ namespace KNFoundation {
                 string xamlPath = KNBundle.MainBundle().PathForResourceOfType(windowXamlName, "xaml");
                 if (xamlPath != null) {
 
-                    FileStream s = new FileStream(xamlPath, FileMode.Open);
+                    FileStream s = new FileStream(xamlPath, FileMode.Open, FileAccess.Read);
                     
                     XamlXmlReaderSettings settings = new XamlXmlReaderSettings();
                     settings.LocalAssembly = Assembly.GetCallingAssembly();
