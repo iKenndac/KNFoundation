@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Windows.Controls;
+using System.ComponentModel;
 using KNFoundation.KNKVC.KVO.Helpers;
 
 namespace KNFoundation.KNKVC {
@@ -32,6 +33,7 @@ namespace KNFoundation.KNKVC {
             helperCache = new Dictionary<object, KNKVOHelper>();
 
             RegisterHelperForType(new CheckboxKVOHelper(), typeof(CheckBox));
+            RegisterHelperForType(new NotifyPropertyChangedKVOHelper(), typeof(INotifyPropertyChanged));
         }
 
         // ---------------------
@@ -114,13 +116,28 @@ namespace KNFoundation.KNKVC {
         /// <returns>A helper.</returns>
         public KNKVOHelper HelperForObject(object anObject) {
 
+            KNKVOHelper usableHelper = null;
+
             if (helpers.ContainsKey(anObject.GetType())) {
-                if (!helperCache.ContainsKey(anObject)) {
-                    helperCache[anObject] = helpers[anObject.GetType()].CopyForNewObject(anObject);
+                usableHelper = helpers[anObject.GetType()];
+            } else {
+                // See if we can find an assignable type
+
+                foreach (Type helperType in helpers.Keys) {
+                    if (helperType.IsAssignableFrom(anObject.GetType())) {
+                        usableHelper = helpers[helperType];
+                        break;
+                    }
                 }
-                KNKVOHelper helper = helperCache[anObject];
-                helper.Retain();
-                return helper;
+            }
+
+            if (usableHelper != null) {
+                if (!helperCache.ContainsKey(anObject)) {
+                    helperCache[anObject] = usableHelper.CopyForNewObject(anObject);
+                }
+                KNKVOHelper newHelper = helperCache[anObject];
+                newHelper.Retain();
+                return newHelper;
             } else {
                 return null;
             }
