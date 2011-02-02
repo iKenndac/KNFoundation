@@ -71,7 +71,7 @@ namespace KNFoundation {
         static Dictionary<string, BitmapImage> imageCache = new Dictionary<string, BitmapImage>();
 
         public static BitmapImage ImageNamed(string imageName) {
-            return ImageInDirectoryNamed(imageName, null);
+            return ImageInDirectoryNamed(null, imageName);
         }
 
         public static BitmapImage ImageInDirectoryNamed(string directoryName, string imageName) {
