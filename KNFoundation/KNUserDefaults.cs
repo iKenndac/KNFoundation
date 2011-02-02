@@ -76,8 +76,10 @@ namespace KNFoundation {
         }
 
         public void Clear() {
-            userDefaults.Clear();
-            Synchronise();
+            if (userDefaults != null) {
+                userDefaults.Clear();
+                Synchronise();
+            }
 
             try {
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);

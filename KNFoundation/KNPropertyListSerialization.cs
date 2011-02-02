@@ -355,24 +355,27 @@ namespace KNFoundation {
 
                 // Make reps
 
-                if (item.GetType() == typeof(string)) {
-                    plistReps = ((string)item).PropertyListRepresentationWithKey(doc, null);
-                } else if (item.GetType() == typeof(Array)) {
-                    plistReps = ((Array)item).PropertyListRepresentationWithKey(doc, null);
-                } else if (item.GetType() == typeof(ArrayList)) {
-                    plistReps = (((ArrayList)item).ToArray().PropertyListRepresentationWithKey(doc, null));
-                } else if (item.GetType() == typeof(int)) {
-                    plistReps = ((int)item).PropertyListRepresentationWithKey(doc, null);
-                } else if (item.GetType() == typeof(DateTime)) {
-                    plistReps = ((DateTime)item).PropertyListRepresentationWithKey(doc, null);
-                } else if (item.GetType() == typeof(bool)) {
-                    plistReps = ((bool)item).PropertyListRepresentationWithKey(doc, null);
-                } else if (item.GetType() == typeof(double)) {
-                    plistReps = ((double)item).PropertyListRepresentationWithKey(doc, null);
-                } else if (item.GetType() == typeof(Dictionary<string, object>)) {
-                    plistReps = ((Dictionary<string, object>)item).PropertyListRepresentationWithKey(doc, null);
-                } else if (item.GetType() == typeof(byte[])) {
-                    plistReps = ((byte[])item).PropertyListRepresentationWithKey(doc, null);
+                if (item != null) {
+
+                    if (item.GetType() == typeof(string)) {
+                        plistReps = ((string)item).PropertyListRepresentationWithKey(doc, null);
+                    } else if (item.GetType().IsAssignableFrom(typeof(Array))) {
+                        plistReps = ((Array)item).PropertyListRepresentationWithKey(doc, null);
+                    } else if (item.GetType() == typeof(ArrayList)) {
+                        plistReps = (((ArrayList)item).ToArray().PropertyListRepresentationWithKey(doc, null));
+                    } else if (item.GetType() == typeof(int)) {
+                        plistReps = ((int)item).PropertyListRepresentationWithKey(doc, null);
+                    } else if (item.GetType() == typeof(DateTime)) {
+                        plistReps = ((DateTime)item).PropertyListRepresentationWithKey(doc, null);
+                    } else if (item.GetType() == typeof(bool)) {
+                        plistReps = ((bool)item).PropertyListRepresentationWithKey(doc, null);
+                    } else if (item.GetType() == typeof(double)) {
+                        plistReps = ((double)item).PropertyListRepresentationWithKey(doc, null);
+                    } else if (item.GetType() == typeof(Dictionary<string, object>)) {
+                        plistReps = ((Dictionary<string, object>)item).PropertyListRepresentationWithKey(doc, null);
+                    } else if (item.GetType() == typeof(byte[])) {
+                        plistReps = ((byte[])item).PropertyListRepresentationWithKey(doc, null);
+                    }
                 }
 
                 if (plistReps != null) {
