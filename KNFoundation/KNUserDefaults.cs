@@ -75,6 +75,11 @@ namespace KNFoundation {
             }
         }
 
+        public void Clear() {
+            userDefaults.Clear();
+            Synchronise();
+        }
+
         // --
 
         public object ObjectForKey(string key) {
