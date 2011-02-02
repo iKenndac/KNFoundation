@@ -78,6 +78,14 @@ namespace KNFoundation {
         public void Clear() {
             userDefaults.Clear();
             Synchronise();
+
+            try {
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                path = Path.Combine(path, Domain + ".plist");
+                File.Delete(path);
+            } catch (Exception) {
+
+            }
         }
 
         // --
