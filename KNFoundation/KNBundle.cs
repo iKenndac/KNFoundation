@@ -4,52 +4,16 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Media.Imaging;
-using System.Windows;
-using System.Windows.Interop;
 using System.Resources;
-using KNFoundation.KNKVC;
 using System.Globalization;
-using System.Drawing;
 using System.Threading;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 
 namespace KNFoundation {
 
     public abstract class KNBundleGlobalHelpers {
-
-        public static void AttemptToLocalizeComponent(DependencyObject obj) {
-
-            if (obj == null) {
-                return;
-            }
-
-            KNBundle bundle = KNBundle.BundleWithAssembly(Assembly.GetAssembly(obj.GetType()));
-
-            // Search for a table named directly after the object, or the name of the object 
-            // plus "Strings". I.e., KNFoundation.KNBundle or KNFoundation.KNBundleStrings.
-
-            string tableName = obj.GetType().ToString();
-            Dictionary<string, string> table = bundle.LocalizedStringTableWithName(tableName);
-
-            if (table == null) {
-                tableName = obj.GetType().ToString() + "Strings";
-                table = bundle.LocalizedStringTableWithName(tableName);
-            }
-
-            if (table != null) {
-
-                foreach (string key in table.Keys) {
-
-                    try {
-                        obj.SetValueForKeyPath(table.ValueForKey(key), key);
-                    } catch { }
-                }
-            }
-        }
 
         public static string KNLocalizedString(string key, string comment) {
             return KNBundle.MainBundle().LocalizedStringForKeyValueTable(key, null, null);
@@ -65,42 +29,6 @@ namespace KNFoundation {
 
         public static string KNLocalizedStringWithDefaultValue(string key, string tableName, KNBundle bundle, string value, string comment) {
             return bundle.LocalizedStringForKeyValueTable(key, value, tableName);
-        }
-
-        // Image cache for BitmapImage.ImageNamed();
-        static Dictionary<string, BitmapImage> imageCache = new Dictionary<string, BitmapImage>();
-
-        public static BitmapImage ImageNamed(string imageName) {
-            return ImageInDirectoryNamed(null, imageName);
-        }
-
-        public static BitmapImage ImageInDirectoryNamed(string directoryName, string imageName) {
-
-            // We cache the images we find for performance reasons. 
-
-            if (String.IsNullOrEmpty(imageName)) {
-                return null;
-            }
-
-            string name = Path.GetFileName(imageName);
-
-            if (imageCache.ContainsKey(name)) {
-                BitmapImage img;
-                if (imageCache.TryGetValue(name, out img)) {
-                    return img;
-                }
-            }
-
-            string path = KNBundle.MainBundle().PathForResourceOfTypeInDirectory(imageName, null, directoryName);
-
-            if (!string.IsNullOrEmpty(path)) {
-                BitmapImage img = new BitmapImage(new Uri(path));
-                img.Freeze();
-                imageCache.Add(name, img);
-                return img;
-            } else {
-                return null;
-            }
         }
     }
 
@@ -179,8 +107,8 @@ namespace KNFoundation {
         private KNBundle(string path, string executablePath, Assembly assembly)
             : this(executablePath) {
             
-           infoDictionary.SetValueForKey(executablePath, KNBundleExecutableKey);
-           CacheStrings(assembly);
+			infoDictionary[KNBundleExecutableKey] = executablePath;
+           	CacheStrings(assembly);
         }
 
         private KNBundle(string path) {
@@ -216,7 +144,7 @@ namespace KNFoundation {
 
             if (assembly == null) {
                 if (InfoDictionary.ContainsKey(KNBundleExecutableKey)) {
-                    assembly = Assembly.LoadFrom(Path.Combine(BundlePath, (string)InfoDictionary.ValueForKey(KNBundleExecutableKey)));
+                    assembly = Assembly.LoadFrom(Path.Combine(BundlePath, (string)InfoDictionary[KNBundleExecutableKey]));
                 } else {
                     assembly = Assembly.GetEntryAssembly();
                 }
@@ -232,7 +160,7 @@ namespace KNFoundation {
                         Dictionary<string, string> stringsTable = ExtractStringsFromResourcesFile(resourcesFileName, assembly);
 
                         if (stringsTable.ContainsKey(KNStringTableRepresentedClassKey)) {
-                            tableName = (string)stringsTable.ValueForKey(KNStringTableRepresentedClassKey);
+                            tableName = (string)stringsTable[KNStringTableRepresentedClassKey];
                         }
 
                         if (stringsCache.ContainsKey(tableName) && stringsTable.Count > 0) {
@@ -478,93 +406,10 @@ namespace KNFoundation {
 
         #region Info Convenience Properties
 
-        public BitmapSource BundleIcon {
-            get {
-
-                if (InfoDictionary.ContainsKey(KNBundleIconFileKey)) {
-                    BitmapImage icon = KNBundleGlobalHelpers.ImageNamed((string)InfoDictionary.ValueForKey(KNBundleIconFileKey));
-                    if (icon != null) {
-                        return icon;
-                    }
-                }
-
-                if (!String.IsNullOrEmpty(ExecutablePath) && File.Exists(ExecutablePath)) {
-
-                    return Icon.ExtractAssociatedIcon(ExecutablePath).ToBitmap().ToBitmapSource();
-                }
-
-                if (!String.IsNullOrEmpty(BundlePath) && Directory.Exists(BundlePath)) {
-
-                    return Icon.ExtractAssociatedIcon(BundlePath).ToBitmap().ToBitmapSource();
-                    
-                }
-
-                return null;
-
-            }
-        }
-
-        public BitmapSource LargeBundleIcon {
-            get {
-                if (InfoDictionary.ContainsKey(KNBundleIconFileKey)) {
-                    BitmapImage icon = KNBundleGlobalHelpers.ImageNamed((string)InfoDictionary.ValueForKey(KNBundleIconFileKey));
-                    if (icon != null) {
-                        return icon;
-                    }
-                }
-
-                if (!String.IsNullOrEmpty(ExecutablePath) && File.Exists(ExecutablePath)) {
-
-                    try {
-                        IconExtractor ex = new IconExtractor(ExecutablePath);
-
-                        Icon icoAppIcon = ex.GetIcon(0); // Because standard System.Drawing.Icon.ExtractAssociatedIcon() returns ONLY 32x32.
-                        Bitmap icon = ExtractVistaIcon(icoAppIcon);
-
-                        if (icon != null) {
-                            return icon.ToBitmapSource();
-                        }
-                    } catch { }
-                }
-
-                return BundleIcon;
-            }
-        }
-
-        // Based on: http://www.codeproject.com/KB/cs/IconExtractor.aspx
-        // And a hint from: http://www.codeproject.com/KB/cs/IconLib.aspx
-
-        private Bitmap ExtractVistaIcon(Icon icoIcon) {
-            Bitmap bmpPngExtracted = null;
-            try {
-                byte[] srcBuf = null;
-                using (System.IO.MemoryStream stream = new System.IO.MemoryStream()) { icoIcon.Save(stream); srcBuf = stream.ToArray(); }
-                const int SizeICONDIR = 6;
-                const int SizeICONDIRENTRY = 16;
-                int iCount = BitConverter.ToInt16(srcBuf, 4);
-                for (int iIndex = 0; iIndex < iCount; iIndex++) {
-                    int iWidth = srcBuf[SizeICONDIR + SizeICONDIRENTRY * iIndex];
-                    int iHeight = srcBuf[SizeICONDIR + SizeICONDIRENTRY * iIndex + 1];
-                    int iBitCount = BitConverter.ToInt16(srcBuf, SizeICONDIR + SizeICONDIRENTRY * iIndex + 6);
-                    if (iWidth == 0 && iHeight == 0 && iBitCount == 32) {
-                        int iImageSize = BitConverter.ToInt32(srcBuf, SizeICONDIR + SizeICONDIRENTRY * iIndex + 8);
-                        int iImageOffset = BitConverter.ToInt32(srcBuf, SizeICONDIR + SizeICONDIRENTRY * iIndex + 12);
-                        System.IO.MemoryStream destStream = new System.IO.MemoryStream();
-                        System.IO.BinaryWriter writer = new System.IO.BinaryWriter(destStream);
-                        writer.Write(srcBuf, iImageOffset, iImageSize);
-                        destStream.Seek(0, System.IO.SeekOrigin.Begin);
-                        bmpPngExtracted = new Bitmap(destStream); // This is PNG! :)
-                        break;
-                    }
-                }
-            } catch { return null; }
-            return bmpPngExtracted;
-        }
-
         public string Name {
             get {
                 if (InfoDictionary.ContainsKey(KNBundleNameKey)) {
-                    return (string)InfoDictionary.ValueForKey(KNBundleNameKey);
+                    return (string)InfoDictionary[KNBundleNameKey];
                 } else {
                     return null;
                 }
@@ -574,7 +419,7 @@ namespace KNFoundation {
         public string DisplayName {
             get {
                 if (InfoDictionary.ContainsKey(KNBundleDisplayNameKey)) {
-                    return (string)InfoDictionary.ValueForKey(KNBundleDisplayNameKey);
+                    return (string)InfoDictionary[KNBundleDisplayNameKey];
                 } else {
                     return null;
                 }
@@ -585,11 +430,11 @@ namespace KNFoundation {
             get {
 
                 if (InfoDictionary.ContainsKey(KNShortVersionStringKey)) {
-                    return (string)InfoDictionary.ValueForKey(KNShortVersionStringKey);
+                    return (string)InfoDictionary[KNShortVersionStringKey];
                 }
 
                 if (InfoDictionary.ContainsKey(KNBundleExecutableKey)) {
-                    string assemblyPath = (string)InfoDictionary.ValueForKey(KNBundleExecutableKey);
+                    string assemblyPath = (string)InfoDictionary[KNBundleExecutableKey];
                     try {
                         AssemblyName name = AssemblyName.GetAssemblyName(assemblyPath);
                         return name.Version.ToString();
@@ -604,11 +449,11 @@ namespace KNFoundation {
         public string Version {
             get {
                 if (InfoDictionary.ContainsKey(KNBundleVersionKey)) {
-                    return (string)InfoDictionary.ValueForKey(KNBundleVersionKey);
+                    return (string)InfoDictionary[KNBundleVersionKey];
                 }
 
                 if (InfoDictionary.ContainsKey(KNBundleExecutableKey)) {
-                    string assemblyPath = (string)InfoDictionary.ValueForKey(KNBundleExecutableKey);
+                    string assemblyPath = (string)InfoDictionary[KNBundleExecutableKey];
                     try {
                         AssemblyName name = AssemblyName.GetAssemblyName(assemblyPath);
                         return name.Version.ToString();
@@ -622,7 +467,7 @@ namespace KNFoundation {
         public string ExecutablePath {
             get {
                 if (InfoDictionary.ContainsKey(KNBundleExecutableKey)) {
-                    return Path.Combine(BundlePath, (string)InfoDictionary.ValueForKey(KNBundleExecutableKey));
+                    return Path.Combine(BundlePath, (string)InfoDictionary[KNBundleExecutableKey]);
                 } else {
                     return null;
                 }
@@ -632,7 +477,7 @@ namespace KNFoundation {
         public string BundleIdentifier {
             get {
                 if (InfoDictionary.ContainsKey(KNBundleIdentifierKey)) {
-                    return (string)InfoDictionary.ValueForKey(KNBundleIdentifierKey);
+                    return (string)InfoDictionary[KNBundleIdentifierKey];
                 } else {
                     return null;
                 }
@@ -647,14 +492,7 @@ namespace KNFoundation {
 
         #region "Properties"
 
-        public string BundlePath {
-            get { return bundlePath; }
-            set {
-                this.WillChangeValueForKey("Path");
-                bundlePath = value;
-                this.DidChangeValueForKey("Path");
-            }
-        }
+        public string BundlePath { get; set; }
 
         public string ResourcesPath {
             get {
