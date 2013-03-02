@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.IO;
-using KNFoundation.KNKVC;
 
 namespace KNFoundation {
 
@@ -183,8 +182,6 @@ namespace KNFoundation {
 
         public override Uri ResolveUri(Uri baseUri, string relativeUri) {
 
-            XmlUrlResolver resolver = new XmlUrlResolver();
-
             if (relativeUri.EndsWith("dtd")) {
                 return new Uri(KNBundle.MainBundle().PathForResourceOfType(localDTDName, null));
             } else {
@@ -310,10 +307,8 @@ namespace KNFoundation {
 
                     if (item.GetType() == typeof(string)) {
                         plistReps = ((string)item).PropertyListRepresentationWithKey(doc, currentKey);
-                    } else if (item.GetType() == typeof(Array)) {
-                        plistReps = ((Array)item).PropertyListRepresentationWithKey(doc, currentKey);
-                    } else if (item.GetType() == typeof(ArrayList)) {
-                        plistReps = (((ArrayList)item).ToArray().PropertyListRepresentationWithKey(doc, currentKey));
+					} else if (typeof(IList).IsAssignableFrom(item.GetType())) {
+						plistReps = ((IList)item).PropertyListRepresentationWithKey(doc, currentKey);
                     } else if (item.GetType() == typeof(int)) {
                         plistReps = ((int)item).PropertyListRepresentationWithKey(doc, currentKey);
                     } else if (item.GetType() == typeof(DateTime)) {
@@ -340,7 +335,7 @@ namespace KNFoundation {
             return plistRep;
         }
 
-        public static ArrayList PropertyListRepresentationWithKey(this Array a, XmlDocument doc, string key) {
+        public static ArrayList PropertyListRepresentationWithKey(this IList a, XmlDocument doc, string key) {
 
             ArrayList plistRep = new ArrayList();
 
@@ -359,10 +354,8 @@ namespace KNFoundation {
 
                     if (item.GetType() == typeof(string)) {
                         plistReps = ((string)item).PropertyListRepresentationWithKey(doc, null);
-                    } else if (item.GetType().IsAssignableFrom(typeof(Array))) {
-                        plistReps = ((Array)item).PropertyListRepresentationWithKey(doc, null);
-                    } else if (item.GetType() == typeof(ArrayList)) {
-                        plistReps = (((ArrayList)item).ToArray().PropertyListRepresentationWithKey(doc, null));
+					} else if (typeof(IList).IsAssignableFrom(item.GetType())) {
+                        plistReps = ((IList)item).PropertyListRepresentationWithKey(doc, null);
                     } else if (item.GetType() == typeof(int)) {
                         plistReps = ((int)item).PropertyListRepresentationWithKey(doc, null);
                     } else if (item.GetType() == typeof(DateTime)) {
