@@ -99,7 +99,6 @@ namespace KNFoundation {
 
         // --------- Instance methods, variables, etc ---------
 
-        private string bundlePath;
         private string cachedLocalisedResourcesPath;
         private Dictionary<string, Dictionary<string, string>> stringsCache;
         private Dictionary<string, object> infoDictionary; // Equivalent to info.plist
